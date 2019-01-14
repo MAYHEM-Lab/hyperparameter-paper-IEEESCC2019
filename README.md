@@ -1,11 +1,11 @@
 # hyperparameter-paper-IEEESCC2019
 
 
-* Overleaf link:
+* Overleaf Edit link:
 ```
-https://www.overleaf.com/5325267277bdsccyhzcgbp
+[paper](https://www.overleaf.com/5325267277bdsccyhzcgbp)
 ```
 * Clone Overleaf project to local
 ```
-git clone https://git.overleaf.com/5325267277bdsccyhzcgbp paper_SCC19
+git clone https://git.overleaf.com/5c3cd071001b2904989771e5 Paper_SCC19
 ```
