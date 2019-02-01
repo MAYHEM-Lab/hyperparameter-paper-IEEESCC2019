@@ -62,11 +62,9 @@ sum. \textit{Seasonality mode} indicates that the effect of seasonality is eithe
 multiplicative or additive. Finally, the width of uncertainty intervals 
 can be set using the hyperparameter \textit{interval width}.
 
-% \textcolor{blue}{Describe what these are in a couple of sentences.}
 In the results that follow, we evaluate \textit{default} parameteterizations (that come with 
 the application or that are defined by the application developer) for each application.  
 The default parameters and tuning options for this Prophet are listed in the table~\ref{tab:prophet_para}. For each cross validation, the application computes mean square error (MSE) as $\frac{1}{n}\sum_{i=1}^{n}(Y_i - \hat{Y_i})$, where $\hat{Y_i}$ is the ground truth, $Y_i$ is model prediction and $n$ is the number of data points. The application returns the average MSE across cross validations. 
-%Using a the model trained by default parameter setting, this average MSE metric is 0.284.
 
 \begin{table}[t]
 \centering
@@ -125,7 +123,11 @@ based on support vector machine and implemented by libsvm~\cite{ref:libsvm} libr
 Neural network~\cite{ref:neural_network} is a machine learning framework that learns 
 and make decisions from patterns in an input dataset. For this application, 
 we use a feedforward multilayer perceptron model~\cite{ref:feedforward_nn} 
-for the classification task.
+for the classification task. The hyperparameter space and default settings that Seneca uses for these three applications are show in Table~\ref{tab:defaults}.
+%Chandra is working on adding this table now, from:
+%https://github.com/Heronalps/Seneca/blob/tuning/config/neural_network/config.py
+%https://github.com/Heronalps/Seneca/blob/tuning/config/xgboost/config.py
+%https://github.com/Heronalps/Seneca/blob/tuning/config/svc/config.py
 
 For these applications (XGBoost, SVC, and Neural Network), 
 we use a labeled dataset for training, testing, and evaluation from a separate
@@ -138,7 +140,8 @@ include size, shape, weight, color, diameter, flatness, among other characterist
 for each fruit.  The label indicates which field each fruit was harvested from.  
 The applications train a model on a random subset of the data.  
 They then use this model to predict the field
-from which each fruit originates. They compute classification accuracy score as $\frac{1}{n}\sum_{i=1}^{n}1(Y_i = \hat{Y_i})$, where $Y_i$ is the prediction class, $Y_i$ is the true class, $n$ is the number of samples and 1(x) is the indicator function. XGBoost also computes MSE for its regression task on the same datasets. The dataset has been filtered to remove correlated features (those with an absolute value of the Pearson correlation coefficient greater than 0.8) and outliers. 
+from which each fruit originates. They compute classification accuracy score as $\frac{1}{n}\sum_{i=1}^{n}1(Y_i = \hat{Y_i})$, where $Y_i$ is the prediction class, $Y_i$ is the true class, $n$ is the number of samples and 1(x) is the indicator function. XGBoost also computes MSE for its regression task on the same datasets. The dataset has been filtered to remove correlated features (those with an absolute value of the 
+Pearson correlation coefficient greater than 0.8) and outliers. 
 %The dataset has also been balanced by downsampling one target whose number 
 %greatly exceeds other ones. 
 The resulting dataset contains 33926 rows (individual fruit) distributed evenly across 5 targets, and each row has 18 features.
@@ -176,7 +179,7 @@ of the hyperparameter settings specified in the configuration, uses them
 to train, test, and evaluate models for each. 
 The default results represents a configuration that a novice or first time 
 user might employ when using these applications
-as a "black box".  The worst performing scenario shows how bad the results can be
+as a ``black box''.  The worst performing scenario shows how bad the results can be
 when parameters are poorly tuned.  Finally, the best configuration 
 is the one that results from tuning they hyperparameters for the test/train split
 that Seneca considers.  
