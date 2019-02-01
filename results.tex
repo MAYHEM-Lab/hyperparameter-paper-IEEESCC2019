@@ -24,25 +24,26 @@ to evaluate Seneca.
 \vspace{-0.2in}
 \end{table}
 
-In this section,
-we evaluate Seneca in terms of performance, monetary cost, and hyperparameter tuning time (latency), 
-using machine learning applications that we ported to Seneca (i.e. that we implemented
-as lambda functions). 
-We first overview these applications and our empirical methodology. 
-We then present our experimental results. 
+In this section, we evaluate Seneca in terms of performance, monetary cost,
+and hyperparameter tuning time (latency), using machine learning applications
+that we ported to Seneca (i.e. that we implemented as lambda functions).  We
+first overview these applications and our empirical methodology.  We then
+present our experimental results. 
 
 \subsection{Benchmark Applications and Training/Testing  Datasets}
-The machine learning applications that we use to evaluate Seneca 
-are shown in Table~\ref{tab:bmarks}, each with 
-a brief description.
-Prophet~\cite{ref:prophet} is a time series analysis library built and maintained by Facebook and the open-source community. The input dataset is a time series of view counts
+
+The machine learning applications that we use to evaluate Seneca are shown in
+Table~\ref{tab:bmarks}, each with a brief description.
+Prophet~\cite{ref:prophet} is a time series analysis library built and
+maintained by Facebook and the open-source community. The input dataset is a
+time series of view counts
 %logorithm
-of Payton Manning's wikipedia page from Dec. 10th, 2007 to Jan. 20th, 2016. 
-The dataset exhibits both seasonality and a holiday effect (e.g. around the super bowl games). 
-We use the first 6 years as the training set and the last 2 years as the testing set.
-We use a cross-validation horizon (sliding window) of 1-year, 
-and a period (sliding pace) 
-of 180 days.  As such, Seneca performs three cross-validations for each 2-year testing range.
+of Payton Manning's wikipedia page from Dec. 10th, 2007 to Jan. 20th, 2016.
+The dataset exhibits both seasonality and a holiday effect (e.g. around the
+super bowl games).  We use the first 6 years as the training set and the last
+2 years as the testing set.  We use a cross-validation horizon (sliding
+window) of 1-year, and a period (sliding pace) of 180 days.  As such, Seneca
+performs three cross-validations for each 2-year testing range.
 
 %%The hyperparameters that Prophet expects are 
 %%\textcolor{blue}{Describe what these are in a couple of sentences.}
@@ -53,18 +54,25 @@ of 180 days.  As such, Seneca performs three cross-validations for each 2-year t
 %%The application computes mean square error of
 %%\textcolor{blue}{finish this here.}
 
-Prophet expects multiple hyperparameters: \textit{growth} specifies linear or logistic trend model growth; \textit{prior scale} indicates the strength of the 
-sparse prior probability~\cite{ref:sparse_prior}. 
-There are three prior scale hyperparameters for change point, holidays, and seasonality. 
-Since Prophet uses a Fourier sum to estimate seasonality, 
-the \textit{fourier order} is the number of terms in the partial Fourier 
-sum. \textit{Seasonality mode} indicates that the effect of seasonality is either 
-multiplicative or additive. Finally, the width of uncertainty intervals 
-can be set using the hyperparameter \textit{interval width}.
+Prophet accepts the following hyperparameters: 
+\textit{growth} specifies linear or
+logistic trend model growth; \textit{prior scale} indicates the strength of
+the sparse prior probability~\cite{ref:sparse_prior}.  There are three prior
+scale hyperparameters for change point, holidays, and seasonality.  Since
+Prophet uses a Fourier sum to estimate seasonality, the \textit{fourier order}
+is the number of terms in the partial Fourier sum. \textit{Seasonality mode}
+indicates that the effect of seasonality is either multiplicative or additive.
+Finally, the width of uncertainty intervals can be set using the
+hyperparameter \textit{interval width}.
 
-In the results that follow, we evaluate \textit{default} parameteterizations (that come with 
-the application or that are defined by the application developer) for each application.  
-The default parameters and tuning options for this Prophet are listed in the table~\ref{tab:prophet_para}. For each cross validation, the application computes mean square error (MSE) as $\frac{1}{n}\sum_{i=1}^{n}(Y_i - \hat{Y_i})$, where $\hat{Y_i}$ is the ground truth, $Y_i$ is model prediction and $n$ is the number of data points. The application returns the average MSE across cross validations. 
+In the results that follow, we evaluate \textit{default} parameteterizations
+(that come with the application or that are defined by the application
+developer) for each application.  The default parameters and tuning options
+for this Prophet are listed in the table~\ref{tab:prophet_para}. For each
+cross validation, the application computes mean square error (MSE) as
+$\frac{1}{n}\sum_{i=1}^{n}(Y_i - \hat{Y_i})$, where $\hat{Y_i}$ is the ground
+truth, $Y_i$ is model prediction and $n$ is the number of data points. The
+application returns the average MSE across cross validations. 
 
 \begin{table}[t]
 \centering
@@ -94,57 +102,66 @@ interval width & 0.8 & [0.5, 0.8] \\
 \vspace{-0.2in}
 \end{table}
 
-Multi-Regression is a regression application 
-developed by the authors of 
-an IoT project~\cite{iot-cpu} that
-predicts outdoor temperature from the processor 
-temperature of single board computers (SBCs).  
-The technique uses multiple linear regression models computed from time
-series of processor temperature measurements,
-to predict outdoor microclimate temperatures (e.g. for use in 
-precision agriculture applications such as irrigation control and frost protection).
-The training dataset consists of eight input time series (one per SBC, each containing 
-5-minute measurements) from April 5th, 2018 to Dec. 10th, 2018.
+Multi-Regression is a regression application developed by the authors of an
+IoT project~\cite{iot-cpu} that predicts outdoor temperature from the
+processor temperature of single board computers (SBCs).  The technique uses
+multiple linear regression models computed from time series of processor
+temperature measurements, to predict outdoor microclimate temperatures (e.g.
+for use in precision agriculture applications such as irrigation control and
+frost protection).  The training dataset consists of eight input time series
+(one per SBC, each containing 5-minute measurements) from April 5th, 2018 to
+Dec. 10th, 2018.  In addition, for each regression there is a single ``ground
+truth'' time series of measurements taken from a temperature sensor.
 
-A hyperparameter configuration for this application is a subset of input SBC time series.
-Seneca considers all \texttt{$2^N - 1$} potential subsets (for $N$ input time series).
-For this application,
-we assume the default parameterization is the set of all $N$ input time series (8 in this case).
-The test dataset for this application is a time series of the outdoor temperature (ground truth) 
-over the same period.  The application makes predictions for each of these outdoor temperatures
-using the model constructed from the training set
-and computes the mean square error across predicted and ground truth value pairs.
+A hyperparameter configuration for this application is a subset of input SBC
+time series.  That is, the ``best'' regression (in terms of lowest regression
+error) comes from some subset of  the SBC series when used as explanatory
+variables for a regression of the ground truth series.  Seneca considers all
+\texttt{$2^N - 1$} potential subsets (for $N$ SBC time series).  For this
+application, we assume the default parameterization is the set of all $N$
+input SBC time series (8 in this case) as explanatory variables.  The test
+dataset for this application is a time series of the outdoor temperature
+(ground truth) over the same period.  The application makes predictions for
+each of these outdoor temperatures using the model constructed from the
+training set and computes the mean square error across predicted and ground
+truth value pairs.
 
-XGBoost~\cite{ref:xgboost-web} is an open source framework for gradient boosting, which 
-performs both regression and classification. We consider it a regression application and
-a classification application in this evaluation.  
-Support vector classification (SVC)~\cite{ref:svc} is a classification algorithm 
-based on support vector machine and implemented by libsvm~\cite{ref:libsvm} library.
-Neural network~\cite{ref:neural_network} is a machine learning framework that learns 
-and make decisions from patterns in an input dataset. For this application, 
-we use a feedforward multilayer perceptron model~\cite{ref:feedforward_nn} 
-for the classification task. The hyperparameter space and default settings that Seneca uses for these three applications are show in Table~\ref{tab:defaults}.
+XGBoost~\cite{ref:xgboost-web} is an open source framework for gradient
+boosting, which performs both regression and classification. We consider it a
+regression application and a classification application in this evaluation.
+Support vector classification (SVC)~\cite{ref:svc} is a classification
+algorithm based on support vector machine and implemented by
+libsvm~\cite{ref:libsvm} library.  Neural network~\cite{ref:neural_network} is
+a machine learning framework that learns and make decisions from patterns in
+an input dataset. For this application, we use a feedforward multilayer
+perceptron model~\cite{ref:feedforward_nn} for the classification task. The
+hyperparameter space and default settings that Seneca uses for these three
+applications are show in Table~\ref{tab:defaults}.
 %Chandra is working on adding this table now, from:
 %https://github.com/Heronalps/Seneca/blob/tuning/config/neural_network/config.py
 %https://github.com/Heronalps/Seneca/blob/tuning/config/xgboost/config.py
 %https://github.com/Heronalps/Seneca/blob/tuning/config/svc/config.py
 
-For these applications (XGBoost, SVC, and Neural Network), 
-we use a labeled dataset for training, testing, and evaluation from a separate
-project (name and citation ommitted for blind review).
-The dataset contains
-measurements of individual citrus fruit (e.g. oranges, mandarins, lemons, etc.) 
-taken by a fruit sorting and grading device (using a large number of sensors).  
-The measurements (i.e. features)
-include size, shape, weight, color, diameter, flatness, among other characteristics,
-for each fruit.  The label indicates which field each fruit was harvested from.  
-The applications train a model on a random subset of the data.  
-They then use this model to predict the field
-from which each fruit originates. They compute classification accuracy score as $\frac{1}{n}\sum_{i=1}^{n}1(Y_i = \hat{Y_i})$, where $Y_i$ is the prediction class, $Y_i$ is the true class, $n$ is the number of samples and 1(x) is the indicator function. XGBoost also computes MSE for its regression task on the same datasets. The dataset has been filtered to remove correlated features (those with an absolute value of the 
-Pearson correlation coefficient greater than 0.8) and outliers. 
-%The dataset has also been balanced by downsampling one target whose number 
+For these applications (XGBoost, SVC, and Neural Network), we use a labeled
+dataset for training, testing, and evaluation from a separate project (name
+and citation ommitted for blind review).  The dataset contains measurements of
+individual citrus fruit (e.g. oranges, mandarins, lemons, etc.) taken by a
+fruit sorting and grading device (using a large number of sensors).  The
+measurements (i.e. features) include size, shape, weight, color, diameter,
+flatness, among other characteristics, for each fruit.  The label indicates
+which field each fruit was harvested from.  The applications train a model on
+a random subset of the data.  They then use this model to predict the field
+from which each fruit originates. They compute classification accuracy score
+as $\frac{1}{n}\sum_{i=1}^{n}1(Y_i = \hat{Y_i})$, where $Y_i$ is the
+prediction class, $Y_i$ is the true class, $n$ is the number of samples and
+1(x) is the indicator function. XGBoost also computes MSE for its regression
+task on the same datasets. The dataset has been filtered to remove correlated
+features (those with an absolute value of the Pearson correlation coefficient
+greater than 0.8) and outliers. 
+%The dataset has also been balanced by downsampling one target whose number
 %greatly exceeds other ones. 
-The resulting dataset contains 33926 rows (individual fruit) distributed evenly across 5 targets, and each row has 18 features.
+The resulting dataset contains 33926 rows (individual fruit) distributed
+evenly across 5 targets, and each row has 18 features.
 
 %The dataset is from a Compac packline machine~\cite{ref:compac} that sorts and grades fruit using a large number of 
 %measurements (i.e. feature measurements including size, shape, weight, color, diameter, flatness, etc.).  The labels identify the field from which fruit was harvested.
@@ -168,40 +185,53 @@ the additional results}.
 %the configurations that are selected, analyze how they change (if they do)
 
 \subsection{Empirical Methodology}
-To evaluate Seneca, we measure tuning performance, application execution time, and monetary cost.
-For tuning performance, we use mean squared error (MSE) for regression tasks 
-and percentage accuracy for
-classification tasks. The default configuration that we 
-consider for each application is described above.
-We report results for the default, the best (Seneca's recommendation), 
-and the worst performing configurations.  Seneca considers all possible combinations 
-of the hyperparameter settings specified in the configuration, uses them
-to train, test, and evaluate models for each. 
-The default results represents a configuration that a novice or first time 
-user might employ when using these applications
-as a ``black box''.  The worst performing scenario shows how bad the results can be
-when parameters are poorly tuned.  Finally, the best configuration 
-is the one that results from tuning they hyperparameters for the test/train split
-that Seneca considers.  
 
-We deploy Seneca on Amazon Web Services (AWS) Lambda and extract
-execution time and memory use from AWS CloudWatch logs.  
-We then compute monetary cost
+To evaluate Seneca, we measure tuning performance, application execution time,
+and monetary cost.  For tuning performance, we use mean squared error (MSE)
+for regression tasks and percentage accuracy for classification tasks. The
+default configuration that we consider for each application is described
+above.  We report results for the default, the best (Seneca's recommendation),
+and the worst performing configurations.  Seneca considers all possible
+combinations of the hyperparameter settings specified in the configuration,
+uses them to train, test, and evaluate models for each.  The default results
+represents a configuration that a novice or first time user might employ when
+using these applications as a ``black box''.  The worst performing scenario
+shows how bad the results can be when parameters are poorly tuned.  Finally,
+the best configuration is the one that results from tuning they
+hyperparameters for the test/train split that Seneca considers.  
+
+We deploy Seneca on Amazon Web Services (AWS) Lambda and extract execution
+time and memory use from AWS CloudWatch logs.  We then compute monetary cost
 using the AWS Lambda pricing model~\cite{ref:pricing}.
 %awslambdapricing: https://aws.amazon.com/lambda/pricing/
-Each function downloads the training and testing dataset 
-of the application from AWS Simple Storage Service (S3) upon function invocation. 
-We do not consider the cost of dataset storage in our cost computations (it is very small).
+Each function downloads the training and testing dataset of the application
+from AWS Simple Storage Service (S3) upon function invocation.  We do not
+consider the cost of dataset storage in our cost computations (it is very
+small).
 
-We also experiment with different memory configurations for Seneca functions in AWS Lambda.  
-We evaluate
-the performance and cost of allocating the maximum memory for each and for automatically optimizing 
-memory use using Seneca. We assume that all combinations hyperparameter settings use the 
-same maximum amount of memory across functions; we 
-have verified that this assumption holds for the applications and datasets that
-we consider herein.
-We plan to consider applications for which hyperparameter settings require 
-different maximum amounts of memory as part of future work.  
+We also experiment with different memory configurations for Seneca functions
+in AWS Lambda.  The pricing model for AWS Lambda charges the account under
+which a computation executes based on the product of its execution time and
+the size of the memory the account owner chooses to configure.  If the
+application exceeded the configured memory, it is terminated.  
+%Thus, the cost
+%optimal configuration is one in which the allocated memory is just large
+%enough to run the application, and no larger, assuming the size of the memory
+%does not affect execution runtime.  
+Seneca includes an probing
+mechanism that attempts to ``learn'' this memory size for a given
+application that minimizes its ecxecution cost.  Note that because AWS Lambda
+does not provide a way to control the speed of the processor that ultimately
+executes each Lambnda function, memory size is the only available cost tuning
+parameter.
+
+We evaluate the performance and cost of allocating the maximum memory versus
+Seneca's automatic memory size optimizer. To do so, we assume that all
+combinations hyperparameter settings use the same maximum amount of memory
+across all function executions. We have verified that this assumption holds
+for the applications and datasets that we consider herein however we plan to
+consider applications for which hyperparameter settings require different
+maximum amounts of memory as part of future work.  
 
 \subsection{Tuning Performance}
 
@@ -243,23 +273,22 @@ Lower MSE values are better.
 \vspace{-0.2in}
 \end{figure}
 
-We first evaluate Seneca using the three regression applications: 
-Prophet, Multi-Regression, and XGBoost (regression task). 
-Table ~\ref{tab:mse} shows the size of the hyperparameter search space (number of configurations
-considered) and the mean squared error (MSE)
-for each of the regression applications that we consider (columns 3-5).
-The first row of data is 
- the number of hyperparameter configurations that Seneca considers in search space of each. 
-The last three rows show the MSE for the default, worst, and best performing 
-hyperparameter configuation reported by Seneca (lower is better).  
-Seneca reduces MSE by 26\%, 16\%, and 67\%, for Prophet, Multi-Regression, and XGBoost,
-respectively, for the datasets and training methodologies that we consider.
-Verses the worst case, Seneca reduces MSE by 83\%, 78\%, and 96\%, respectively.
+We first evaluate Seneca using the three regression applications: Prophet,
+Multi-Regression, and XGBoost (regression task).  Table ~\ref{tab:mse} shows
+the size of the hyperparameter search space (number of configurations
+considered) and the mean squared error (MSE) for each of the regression
+applications that we consider (columns 3-5).  The first row of data is the
+number of hyperparameter configurations that Seneca considers in search space
+of each.  The last three rows show the MSE for the default, worst, and best
+performing hyperparameter configuation reported by Seneca (lower is better).
+Seneca reduces MSE by 26\%, 16\%, and 67\%, for Prophet, Multi-Regression, and
+XGBoost, respectively, for the datasets and training methodologies that we
+consider.  Verses the worst case, Seneca reduces MSE by 83\%, 78\%, and 96\%,
+respectively.
 
 Figure~\ref{fig:box_plot_mse} provides a box plot of MSE (lower is better)
 for these applications 
-for the entire hyperparameter 
-search space. The central rectangle covers the interquartile range (IQR), 
+for the entire hyperparameter search space. The central rectangle covers the interquartile range (IQR), 
 which is defined as the range of data 
 points from first quartile to third quartile (Q3 - Q1). 
 The upper whisker extends to the last datum less 
@@ -274,8 +303,16 @@ Each is located near the
 From the location of red notch, we can see the MSE metrics 
 first quartile value indicating that there is significant 
 potential room for improvement in MSE. The box plot also illustrates 
-that the best MSE of Prophet and multivariate regression are among the outliers, 
-indicating that a comprehensive search is critical to finding the best configurations. 
+that low MSE hyperparametrizations are often rare in the hyperparameter space.
+Note that for Prophet and Multi-regression, the number of parameterizations that
+yield an MSE lie below the low whisker is small and that the best MSE is
+always more than $2 * IQR$ below the Q1 quartile.  Thus a comprehensive
+exploration of the hyperparameter space is warranted from the perspective of
+minimizing the MSE.   
+
+%of Prophet and multivariate regression are among the outliers, 
+%indicating that a comprehensive search is critical to finding the best configurations. 
+
 %\textcolor{blue}{Add more analysis here to discuss the variance in the MSE for the range of configurations and how they change across applications. Include any insights that the boxplots add.}
 
 %%%%%%%%%%%%%%%%%%%%% classification apps - tuning performance %%%%%%%%%%%%%%%%%%%%%%%%%
