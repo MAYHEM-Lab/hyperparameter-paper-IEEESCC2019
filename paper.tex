@@ -1,6 +1,6 @@
 \documentclass[10pt, conference]{IEEEtran}
 
-\newcommand{\ignore}[1]{}
+
 
 % *** MISC UTILITY PACKAGES ***
 %
@@ -19,8 +19,6 @@
 % \ifCLASSINFOpdf conditional that works the same way.
 % When switching from latex to pdflatex and vice-versa, the compiler may
 % have to be run twice to clear warning/error messages.
-
-
 
 
 
@@ -79,12 +77,11 @@
 % http://www.ctan.org/tex-archive/macros/latex/required/amslatex/math/
 
 
-
-
+\usepackage[]{algorithm2e}
 
 % *** SPECIALIZED LIST PACKAGES ***
 %
-%\usepackage{algorithmic}
+% \usepackage{algorithmic}
 % algorithmic.sty was written by Peter Williams and Rogerio Brito.
 % This package provides an algorithmic environment fo describing algorithms.
 % You can use the algorithmic environment in-text or within a figure
@@ -317,16 +314,20 @@ Serverless computing; Model optimization; Hyperparameters tuning
 \input{intro}
 
 \section{Background}
+\label{sec:background}
+\input{background}
 
 \section{Seneca}
 \label{sec:seneca}
 \input{Seneca}
-\section{Evaluation}
 
+\section{Evaluation}
 \label{sec:eval}
 \input{results}
 
 \section{Related Work}
+\label{sec:relate_work}
+\input{related_work}
 
 % An example of a floating figure using the graphicx package.
 % Note that \label must occur AFTER (or within) \caption.
@@ -413,17 +414,17 @@ Serverless computing; Model optimization; Hyperparameters tuning
 
 
 \section{Conclusion}
-
-
+\label{sec:conclusion}
+\input{conclusion}
 % conference papers do not normally have an appendix
 
 
 % use section* for acknowledgement
-\section*{Acknowledgment}
+% \section*{Acknowledgment}
 
 
-The authors would like to thank...
-more thanks here
+% The authors would like to thank...
+% more thanks here
 
 
 % trigger a \newpage just before the given reference
