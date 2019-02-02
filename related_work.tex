@@ -2,26 +2,31 @@ In this section, we overview related work. We discuss contributions that focus
 on serverless computing and machine learning model optimization. 
 
 Multiple researchers have investigated the efficacy and overhead of the
-serverless programming model and implementations.
-the benefit and drawback of such has been well researched by
+serverless programming model and 
+implementations~\cite{ref:baldini2017,ref:jonas2017occupy,ref:onesteptwostep,ref:lin2018tracking}.
 The authors in \cite{ref:onesteptwostep} evaluates the cost and performance of using
 serverless for data-intensive computing.  They identify some key weaknesses in AWS
 Lambda for this application domain including the inability to effectively train models.
-Our work show that it is possible for a subset of machine learning applications to 
-train models in a cost effective ways.
-\cite{ref:baldini2017} identifies multiple open research questions surrounding serverless,
-including whether or not functions should be stateless. PyWren~\cite{ref:jonas2017occupy} provides us 
+Our work show that it is possible for the subset of machine learning applications that we 
+consider, to train models in a cost effective ways.
+
+%\cite{ref:baldini2017} identifies multiple open research questions surrounding serverless,
+%including whether or not functions should be stateless. PyWren~\cite{ref:jonas2017occupy} provides us 
 a new perspective of stateless function being a natural fit for distributed computing models, because it 
-abstract away cluster management overhead from running embarrassingly parallel jobs. ExCamera~\cite{ref:encoding}
- exemplifies a framework running general-purpose parallel tasks (encoding 4K video) on commercial serverless platform 
-by multithreading. An empirical measurement study has been conducted in~\cite{ref:peeking} across AWS Lambda, 
-Azure Functions and Google Cloud Functions to discuss the resource utilization and performance isolation efficiency of 
-three platforms. Besides efficacy and efficiency, there are challenges serverless architecture are facing in terms of 
-application monitoring and distributed storage. GammaRay~\cite{ref:lin2018tracking} proposes a cloud service that extracts
-causal dependencies across serverless functions and cloud services without programmer intervention. Such monitoring and 
-debugging tool simplifies the development and maintenance of serverless applications. Pocket~\cite{ref:ephemeral} provides 
-an elastic and economical distributed data store for severless analytic applications. We expect more contributions to toolchain 
-and distributed storage of serverless in upcoming years.
+abstracts away cluster management overhead and is ideal for embarrassingly parallel jobs. 
+ExCamera~\cite{ref:encoding} presents a 
+framework for running general-purpose parallel tasks (encoding 4K video) 
+on a commercial serverless platform using multithreading. 
+An empirical comparison of resource utilization and performance isolation
+is provided in~\cite{ref:peeking} for AWS Lambda, 
+Azure Functions, and Google Cloud Functions.
+%to discuss the resource utilization and performance isolation efficiency of 
+%three platforms. Besides efficacy and efficiency, there are challenges serverless architecture are facing in terms of 
+%application monitoring and distributed storage. GammaRay~\cite{ref:lin2018tracking} proposes a cloud service that extracts
+%causal dependencies across serverless functions and cloud services without programmer intervention. Such monitoring and 
+%debugging tool simplifies the development and maintenance of serverless applications. Pocket~\cite{ref:ephemeral} provides 
+%an elastic and economical distributed data store for severless analytic applications. We expect more contributions to toolchain 
+%and distributed storage of serverless in upcoming years.
 
 %please also discuss and cite these papers - you may need a second paragraph
 %http://www.cs.ucsb.edu/~ckrintz/papers/ic2e18.pdf
