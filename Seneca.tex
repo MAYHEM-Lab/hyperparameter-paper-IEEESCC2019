@@ -33,10 +33,13 @@ that when executed will download and uncompress the application,
 download the dataset and split it into a training and testing set,
 and construct, test, and evaluate a model using the application
 and a set of hyperparameter values passed in by Seneca as arguments.
-The handler returns a testing score.
+Users can specify the train/test split that should be used by Seneca; the
+default is 80\%/20\% for classification tasks.
+The handler returns a testing score. 
 Upon completion of this process, the container deploys the handler
 to AWS Lambda using the
 AWS Command line Interface~\cite{ref:awscli}.
+
 
 
 \subsection{Optimizing Memory Use}
@@ -148,20 +151,33 @@ Define deques for struct of allocated memory \& compute charge\;
 
 \subsection{Tuning Process}
 
-For current function invocation, Seneca integrates 
+For parallel function invocation, Seneca integrates 
 Celery~\cite{ref:celery}. Celery is an asynchronous task queue 
 that uses distributed message passing. Celery workers are processes 
-that take tasks from the queue, execute tasks, and store the
-result in a database (we use Redis~\cite{ref:redis} in our prototype). 
+that take tasks from the queue, execute the tasks with the auguments specified, 
+and store the result that is returned 
+in a database (we use Redis~\cite{ref:redis} in our prototype). 
 
 Based on the configuration file, Seneca creates a list of 
 payloads (function arguments) that contains values of 
-hyperparameters.  The complete list contains all combinations of parameter
+hyperparameters.  The complete list contains all combinations of the
+specified parameter
 settings.  Seneca places the list on the queue and celery 
 workers invoke the Lambda handler of the application, passing in the
-payload to the handler to use for model construction.  Upon function
+payload (hyperparameter values) to the handler to use for model construction.  
+Upon function
 termination, the work records the evaluation score (and serialized model)
 in the database with the hyperparameter configuration from the payload.
 When the queue is drained and all workers have completed, Seneca
-extracts and reports the best score and configuration from the database.
+extracts and reports the best score, configuration, and model from the database.
+Users can then evaluate the prediction power of the models (using Seneca if desired) 
+for other datasets (to amortize the time/cost of Seneca) without retraining. 
 
+We assume that the dataset supplied to Seneca by the user
+is representative of datasets on which the 
+resulting model will be use.  In addition, we use prediction error as the 
+score (i.e., mean squared error for regression and accuracy percentage for classification) 
+instead of $R^2$, which describes explanatory power, to avoid overfitting.
+As part of future work, we are considering using multiple datasets and a ranges
+of hyperparameter values (versus lists) to preclude the need for users to specify
+them and to consider a wider range of possible values.

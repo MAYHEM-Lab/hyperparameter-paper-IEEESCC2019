@@ -1,0 +1,27 @@
+
+In this paper, we present Seneca, a new framework for simplifying and expediting
+the training and testing of machine learning models in terms of their prediction 
+power using very low cost cloud computing services.
+Specifically, Seneca leverages the AWS Lambda serverless cloud service for autoscaled
+(elastic) and parallel execution of hyperparameter search and selection for machine learning
+applications.  
+Users provide Seneca with the application code and libraries, 1+ datasets, and the list 
+of possible hyperparameter settings.  Seneca uses this 
+information to automatically construct an AWS Lambda function that
+that invokes the application, imports and splits the dataset into training
+and testing datasets, and constructs, tests, and evaluates (i.e. scores) a machine
+learning model for a particular configuration of hyperparameter settings.  
+Seneca orchestrates parallel execution of these functions for all possible 
+combinations of hyperparameter values specified and returns the best scoring model
+and configuration to the user (for future use on other datasets).
+
+We present the design, implementation, and cost optimization for Seneca.
+The optimization automaticallly optimizes function memory use to reduce the cost
+of AWS Lambda use.  Our empirical evaluation using
+multiple applications for regression and classification (using
+the models for prediction and not explanitory value), shows that Seneca is able to quickly
+identify the best performing model for the applications and datasets that we consider.  
+We also show that Seneca memory optimization reduces the cost of using
+Seneca by 10-30\% for the applications studied.
+
+
