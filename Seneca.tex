@@ -46,7 +46,7 @@ AWS Command line Interface~\cite{ref:awscli}.
 
 The AWS Lambda pricing model is determined by the execution duration 
 and memory. The cost of a function instance is referred to as 
-\texttt{compute charge}, and is calculated as the amont of 
+\texttt{compute charge}, and is calculated as the amount of 
 allocated memory multiplied by the
 billed duration (execution time rounded up to the 
 nearest 100ms)~\cite{ref:pricing}.
@@ -78,7 +78,7 @@ in the same way as is done for general purpose Amazon EC2 instance types.
 
 To verify such claim, we conduct an experiment in which
 we increase of CPU power and memory for a compute-bound 
-AWS Lambda function (a microbenchmark that performs 3-D matrix multiply~\cite{ref:matrix}).
+AWS Lambda function (a microbenchmark that performs 3-D matrix multiplication~\cite{ref:matrix}).
 We configure function instances to use the 46 possible allocated 
 memory increments, invoke them, and record the billed duration and memory
 use of each.
@@ -132,17 +132,17 @@ flag when starting Seneca.
 \KwData{Typical payload}
 \KwResult{Optimal allocated memory}
 Find memory used by payload as start point\;
-Define deques for struct of allocated memory \& compute charge\;
+Define deques for allocated memory \& compute charge\;
  \While{allocated memory $\leq$ 3008 MB}{
   
   \eIf{compute charge monotonically increase in deque \& slope $\geq$ 1}{
-   Popleft from deque\;
+   Popleft from deques\;
    Configure allocated memory of function\; 
    Exit\;
    }{
    Increase allocated memory by 64 MB\;
    Probe lambda function\;
-   Append new struct to deque\;
+   Append allocated memory and compute charge to deques\;
   }
  }
  \caption{Seneca Optimizer Heuristic}
