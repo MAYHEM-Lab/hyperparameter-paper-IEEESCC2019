@@ -10,7 +10,19 @@ Lambda for this application domain including the inability to effectively train 
 Our work show that it is possible for a subset of machine learning applications to 
 train models in a cost effective ways.
 \cite{ref:baldini2017} identifies multiple open research questions surrounding serverless,
-including whether or not functions should be stateless. 
+including whether or not functions should be stateless. PyWren~\cite{ref:jonas2017occupy} provides us 
+a new perspective of stateless function being a natural fit for distributed computing models, because it 
+abstract away cluster management overhead from running embarrassingly parallel jobs. ExCamera~\cite{ref:encoding}
+ exemplifies a framework running general-purpose parallel tasks (encoding 4K video) on commercial serverless platform 
+by multithreading. An empirical measurement study has been conducted in~\cite{ref:peeking} across AWS Lambda, 
+Azure Functions and Google Cloud Functions to discuss the resource utilization and performance isolation efficiency of 
+three platforms. Besides efficacy and efficiency, there are challenges serverless architecture are facing in terms of 
+application monitoring and distributed storage. GammaRay~\cite{ref:lin2018tracking} proposes a cloud service that extracts
+causal dependencies across serverless functions and cloud services without programmer intervention. Such monitoring and 
+debugging tool simplifies the development and maintenance of serverless applications. Pocket~\cite{ref:ephemeral} provides 
+an elastic and economical distributed data store for severless analytic applications. We expect more contributions to toolchain 
+and distributed storage of serverless in upcoming years.
+
 %please also discuss and cite these papers - you may need a second paragraph
 %http://www.cs.ucsb.edu/~ckrintz/papers/ic2e18.pdf
 %http://shivaram.org/publications/pywren-socc17.pdf
@@ -19,7 +31,7 @@ including whether or not functions should be stateless.
 %. Wang, M. Li, Y. Zhang, T. Ristenpart, and M. Swift. “Peek- ing Behind the Curtains of Serverless Platforms”. In: USENIX ATC. Boston, MA: USENIX Association, 2018, pp. 133–146.
 
 The serverless framework~\cite{ref:serverless_framework} contributes an 
-automated packaging and deployment toolseet for serverless functions across clouds. 
+automated packaging and deployment toolset for serverless functions across clouds. 
 The serverless framework uses Cloudformation~\cite{ref:cloudformation} to package and deploy Lambda function, which introduces additional cost. Seneca uses local docker container to avoid this cost
 and overhead. The cloud infrastructure provisioning framework Terraform~\cite{ref:terraform} 
 also provides automated deployment of functions to serverless platforms, but it does not simulate the AWS Lamdba runtime to create the deployment package (doing so on a non-Linux system will result in Lambda errors and failures at execution time). 
