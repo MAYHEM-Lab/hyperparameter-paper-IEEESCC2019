@@ -1,7 +1,38 @@
-In this section, we overview related works and research contributions focusing on serverless computing and model optimization. 
+In this section, we overview related work. We discuss contributions that focus
+on serverless computing and machine learning model optimization. 
 
-With respect to serverless architecture, the benefit and drawback of such has been well researched by~\cite{ref:onesteptwostep}, in which the authors conduct a case study to show Lambda function can be more expensive than EC2 instances.~\cite{ref:baldini2017} points out serveral open research questions, including the boundaries and statelessness of serverless. Furthermore, we were inspired by ~\cite{ref:matrix} to experiment on disproportional CPU power with matrix multiplication application.  
+Multiple researchers have investigated the efficacy and overhead of the
+serverless programming model and implementations.
+the benefit and drawback of such has been well researched by
+The authors in \cite{ref:onesteptwostep} evaluates the cost and performance of using
+serverless for data-intensive computing.  They identify some key weaknesses in AWS
+Lambda for this application domain including the inability to effectively train models.
+Our work show that it is possible for a subset of machine learning applications to 
+train models in a cost effective ways.
+\cite{ref:baldini2017} identifies multiple open research questions surrounding serverless,
+including whether or not functions should be stateless. 
+%please also discuss and cite these papers - you may need a second paragraph
+%http://www.cs.ucsb.edu/~ckrintz/papers/ic2e18.pdf
+%http://shivaram.org/publications/pywren-socc17.pdf
+%S. Fouladi, R. S. Wahby, B. Shacklett, K. V. Balasubramaniam, W. Zeng, R. Bhalerao, A. Sivaraman, G. Porter, and K., Winstein. “Encoding, Fast and Slow: Low-Latency Video Pro- cessing Using Thousands of Tiny Threads”. In: NSDI. Boston, MA: USENIX Association, 2017, pp. 363–376.
+%A. Klimovic, Y. Wang, C. Kozyrakis, P. Stuedi, J. Pfefferle, and A. Trivedi. “Understanding Ephemeral Storage for Serverless Analytics”. In: USENIX ATC. Boston, MA: USENIX Associa- tion, 2018, pp. 789–794.
+%. Wang, M. Li, Y. Zhang, T. Ristenpart, and M. Swift. “Peek- ing Behind the Curtains of Serverless Platforms”. In: USENIX ATC. Boston, MA: USENIX Association, 2018, pp. 133–146.
 
-On the tooling of serverless, the serverless framework~\cite{ref:serverless_framework} contributes on automated packaging and deployment of serverless function on multi-cloud circumstance. Serverless framework uses Cloudformation~\cite{ref:cloudformation} to package and deploy lambda function that generate additional cost, whereas Seneca uses local docker container with no extra cost. Cloud infrastructure provisioning framework terraform~\cite{ref:terraform} also provides automated deployment to serverless platform, but it can not simulate the AWS Lamdba runtime to create deployment package. In addition, AWS CodeDeploy~\cite{ref:codedeploy} serves as component in the continuous Integration and delivery pipeline for serverless architecture, but it again generates extra cost.
+The serverless framework~\cite{ref:serverless_framework} contributes an 
+automated packaging and deployment toolseet for serverless functions across clouds. 
+The serverless framework uses Cloudformation~\cite{ref:cloudformation} to package and deploy Lambda function, which introduces additional cost. Seneca uses local docker container to avoid this cost
+and overhead. The cloud infrastructure provisioning framework Terraform~\cite{ref:terraform} 
+also provides automated deployment of functions to serverless platforms, but it does not simulate the AWS Lamdba runtime to create the deployment package (doing so on a non-Linux system will result in Lambda errors and failures at execution time). 
+In addition, AWS CodeDeploy~\cite{ref:codedeploy} serves as component in the continuous integration and delivery pipeline for serverless architectures, but it also introduces monetary cost overhead
+to do so.
 
-Automated hyperparameter optimization has been researched and developed in numerous projects. Google Vizier~\cite{ref:vizier} provides a service of black-box optimization. Optunity~\cite{ref:claesen2014hyperparameter} proposes a Python library for hyperparameter tuning. This could be considered as precursory work of Hyperopt~\cite{ref:hyperopt}, which is a more advanced Python library for serial and parallel hyperparameter optimization over awkward search space. Hyperas ~\cite{ref:hyperas} adds another abstraction layer to hyperopt and facilitates the hyperparameter tuning for Keras ~\cite{ref:keras}. However, none of above work ports hyperparameter tuning tasks to serverless platform and evaluates the tuning performance, cost and latency. To the best of our knowledge, Seneca is the first framework contributing in this aspect.
+Automated hyperparameter optimization has been researched and developed 
+in numerous projects. Google Vizier~\cite{ref:vizier} provides a service for 
+black-box optimization. Optunity~\cite{ref:claesen2014hyperparameter} 
+proposes a Python library for hyperparameter tuning. 
+This can be considered as precursory work of Hyperopt~\cite{ref:hyperopt}, 
+which is a more advanced Python library for serial and parallel hyperparameter 
+optimization over awkward search space. Hyperas ~\cite{ref:hyperas} adds another 
+abstraction layer to hyperopt and facilitates the hyperparameter tuning for 
+Keras ~\cite{ref:keras}. However, no extant work of which we are aware leverages
+serverless to perform hyperparameter tuning in parallel. 

@@ -1,3 +1,99 @@
-Serverless~\cite{ref:serverless} computing is a rising function-based (also known as Funtions-as-a-Service~\cite{ref:faas}) programming and deployment paradigm on top of cloud infrastructure, in which programmers manifest business logic without concerning provisioning servers by modular functions that are triggered by incoming events and return computation results in serialized format like XML or JSON. Such events include HTTP requests from clients, possibly proxied by API Gateway, or communications between cloud services based on heterogeneous protocols. Depending on the supported runtimes from cloud vendors, functions could be written in various high-level languages (i.e. NodeJS, Python, Java, etc.) and take advantage of serverless SDK to interact with other cloud services. Until recently, the leading serverless platform, Amazon Web Services(AWS) Lambda, expands language support by custom runtime~\cite{ref:customruntime} where software engineers can implement functions by any programming languages. 
+The scale and elasticity of cloud computing systems have 
+fueled remarkable innovation and unprecedented commercial 
+investment.  Cloud users ``rent'' virtualized resources (while sharing
+the underlying physical resources) on a pay-per-use basis
+in exchange for availability guarantees specified via service level
+agreements (SLAs). Uniquely, cloud systems can be configured 
+to add and remove resources and services,
+automatically and on-demand, based on load 
+or as required by executing applications.
+
+To date however, cloud use has been limited to large-scale 
+implementations of enterprise services, such as
+object storage, databases, queuing systems, and web and application servers.
+The reason for this is that it is very
+challenging, even for expert users, to configure complex
+distributed systems for application use, 
+and to leverage the elasticity (auto-scaling) that
+clouds offer. To address this challenge, cloud providers 
+have started to offer cloud programming and execution environments
+under the moniker of \textit{serverless} 
+computing~\cite{xxx,yyy,zzz}.  Serverless
+systems automatically configure, manage, and scale applications
+to significantly simplify and broaden participation in (by less expert
+users) the use of cloud systems.
+%xxx: http://shivaram.org/publications/pywren-socc17.pdf
+%yyy: http://cidrdb.org/cidr2019/papers/p119-hellerstein-cidr19.pdf
+%zzz: L. Wang, M. Li, Y. Zhang, T. Ristenpart, and M. Swift. “Peek- ing Behind the Curtains of Serverless Platforms”. In: USENIX ATC. Boston, MA: USENIX Association, 2018
+
+Using the serverless model, applications developers upload 
+arbitrary computations in high level languages
+as stateless functions to these cloud-hosted services, along with a
+specification conditions under which each
+function should be triggered.  Functions are invoked (triggered)
+automatically by the cloud in response to updates to other cloud services
+(e.g. storage, queues, notification services, among others). They
+communicate, persist, and access data only 
+via their inputs or shared, remote storage.  
+As a result, serverless applications are inherently elastic and can 
+implement highly concurrent and parallel tasks.
+In public clouds, users pay a small fee for the resources their 
+functions use during execution, resulting in very low cost cloud use.
+Although now available from all public cloud providers and as open 
+source for private cloud systems, 
+AWS Lambda~\cite{awslambda} was the first and is now the 
+most popular and most advanced serverless public cloud service 
+available today.
+%awslambda: https://docs.aws.amazon.com/lambda/latest/dg/lambda-dg.pdf
+
+In this work, we investigate the efficacy of using AWS Lambda
+for tuning machine learning applications.
+To date, Lambda has not be heavily used for training and evaluating
+machine learning models because of a concern that 
+doing so will result in high overhead (i.e. be costly) because
+of the stateless nature of serverless functions~\cite{ref:onesteptwostep}.
+At the same time, identifying the ``best'' configuration for advanced
+machine learning models is challenging given the large number of configuration
+options, i.e., hyperparameters, typical of models today.
+Hyperparameters governs the learning process of machine learning applications.
+Given that parameter sweeps are embarrassingly parallel, we believe
+that such tuning is a good fit for the serverless model.
+To investigate this potential, its overhead, and to simplify the 
+use of Lambda for training, testing, and evaluation machine learning models, 
+we design and develop a new system and toolset called \textit{Seneca}.
+
+Specifically, Seneca implements, packages, and deploys 
+machine learning applications as stateless functions to AWS Lambda.
+It then orchestrates exhaustive evaluation of hyperparameter settings
+to identify the best performing model (for a given dataset) by
+comparing the error and accuracy across models.  Users present
+Seneca with their application, a range of values for 
+each hyperparameter (or the default can be used), and a dataset.
+Seneca produces, tests, and evaluates models for all combinations 
+of hyperparameters and returns to the user, 
+the set of parameters (or the model itself) that produces
+the best cross-validation score (e.g. lowest squared error or highest
+accuracy).
+
+We deploy Seneca on AWS Lambda and evaluate its tuning performance, cost,
+and memory use for six machine learning applications and datasets. We 
+find that Seneca is effective for quickly training these
+models and identifying the best performing hyperparameter setting for 
+these applications. We also find 
+Seneca to be very low cost and able to automatically 
+identify the 
+best memory configuration for each application further lowering its 
+by 10-30\%.
+We intend to make Seneca and the applications available as open source
+when/if this paper is accepted for publication.  In the sections
+that follow, we overview our design and implementation of Seneca and then
+present our empirical methodology and results.
+
+
+\ignore{
+Recent work~\cite{ref:onesteptwostep} argues however that AWS Lambda
+
+Serverless~\cite{ref:serverless} computing is a rising function-based (also known as Functions-as-a-Service~\cite{ref:faas}) programming and deployment paradigm on top of cloud infrastructure, in which programmers manifest business logic without concerning provisioning servers by modular functions that are triggered by incoming events and return computation results in serialized format like XML or JSON. Such events include HTTP requests from clients, possibly proxied by API Gateway, or communications between cloud services based on heterogeneous protocols. Depending on the supported runtimes from cloud vendors, functions could be written in various high-level languages (i.e. NodeJS, Python, Java, etc.) and take advantage of serverless SDK to interact with other cloud services. Until recently, the leading serverless platform, Amazon Web Services(AWS) Lambda, expands language support by custom runtime~\cite{ref:customruntime} where software engineers can implement functions by any programming languages. 
 
 Primarily, there are four evolutionary advantages that serverless architecture brings to cloud computing. First and foremost, it raises the abstraction layer from virtual machines to function containers~\cite{ref:container} that abstracts away the responsibilities of infrastructure management from DevOps~\cite{ref:devops} personnel to the cloud provider, in terms of scaling, patching, provisioning, error-handling and terminating underlying bare metal servers or clusters. Such shift allows more agile development life cycle and more product-oriented programming iteration. Secondly, the event-driven and paralleled container runtime of serverless function provides more fine-grained computational resource isolation and usage. Hence, serverless architecture makes cloud operation more secure and energy-efficient compared to traditional virtual machine instance runtime. Thirdly, serverless architecture decomposes monolithic application code base even further from microservices~\cite{ref:microservices} into granular functions, which are easier to be created, maintained and refactored by team or individual programmer. Furthermore, Function-as-a-Service applications could be autoscaled independently with respect to modular functions depending on the volume of request. This capability also contributes to the energy efficiency and eliminating throttling bottlenecks. Lastly, serverless computing provides "Pay-per-execution" pricing model~\cite{ref:pricing}. In a real world case study~\cite{ref:serverless_econ}, the server operational cost on serverless platform could be reduced dramatically, given a relatively lower amount of Transactions Per Second (TPS). According to these merits, the stateless, event-driven and embarrassingly parallel tasks are potentially cost-effective with lower latency by running on serverless framework. 
+}

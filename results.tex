@@ -1,7 +1,7 @@
 \begin{table}[t]
 \centering
-\scriptsize
-\resizebox{\columnwidth}{!}{
+%\scriptsize
+%\resizebox{\columnwidth}{!}{
 \begin{tabular}{|l|l|} \hline
 \textbf{Application}& \textbf{Description}\\
 \hline
@@ -15,7 +15,8 @@ SVC & Classification based on support vector machine\\
 \hline
 Neural Network& Classification by layered artificial neural network\\
 \hline
-\end{tabular}}
+\end{tabular}
+%}
 \caption{Machine learning applications used as benchmarks
 to evaluate Seneca. 
 %paper submission is blind (so such references must be omitted so as not to reveal our identities):
@@ -44,15 +45,6 @@ We use a cross-validation horizon (sliding window) of 1-year,
 and a period (sliding pace) 
 of 180 days.  As such, Seneca performs three cross-validations for each 2-year testing range.
 
-%%The hyperparameters that Prophet expects are 
-%%\textcolor{blue}{Describe what these are in a couple of sentences.}
-%%In the results that follow, we evaluate \textit{default} parameteterizations (that come with 
-%%the application or that are defined by the application developer) for each application.  
-%%The default parameters for this application are
-%%\textcolor{blue}{Describe them here.}
-%%The application computes mean square error of
-%%\textcolor{blue}{finish this here.}
-
 Prophet expects multiple hyperparameters: \textit{growth} specifies linear or logistic trend model growth; \textit{prior scale} indicates the strength of the 
 sparse prior probability~\cite{ref:sparse_prior}. 
 There are three prior scale hyperparameters for change point, holidays, and seasonality. 
@@ -60,17 +52,16 @@ Since Prophet uses a Fourier sum to estimate seasonality,
 the \textit{fourier order} is the number of terms in the partial Fourier 
 sum. \textit{Seasonality mode} indicates that the effect of seasonality is either 
 multiplicative or additive. Finally, the width of uncertainty intervals 
-can be set using the hyperparameter \textit{interval width}.
+is set using \textit{interval width}.
 
-% \textcolor{blue}{Describe what these are in a couple of sentences.}
 In the results that follow, we evaluate \textit{default} parameteterizations (that come with 
 the application or that are defined by the application developer) for each application.  
 The default parameters and tuning options for this application are listed in the table~\ref{tab:prophet_para}. For every cross validation, the application computes mean square error (MSE) as $\frac{1}{n}\sum_{i=1}^{n}(Y_i - \hat{Y_i})$, where $\hat{Y_i}$ is the ground truth, $Y_i$ is model prediction and n is the number of data points. Then the application returns the average MSE of all cross validation. Based on the model trained by default parameter setting, this average MSE metric is 0.284.
 
 \begin{table}[t]
 \centering
-\scriptsize
-\resizebox{\columnwidth}{!}{
+%\scriptsize
+%\resizebox{\columnwidth}{!}{
 \begin{tabular}{|l|l|l|} 
 \hline
 \textbf{Hyperparameter}& \textbf{Default} & \textbf{Tuning options}\\
@@ -89,9 +80,41 @@ seasonality mode & additive & [additive, multiplicative] \\
 \hline
 interval width & 0.8 & [0.5, 0.8] \\
 \hline
-\end{tabular}}
-\caption{The selected configurable hyperparameters of Prophet. The default value and tuning options are listed. 
+\end{tabular}
+%}
+\caption{The hyperparameters that Seneca considers for Prophet. 
+The default value and tuning options are listed. 
 \label{tab:prophet_para}}
+%\vspace{-0.2in}
+\end{table}
+
+\begin{table}[t]
+\centering
+%\scriptsize
+\input{hparams-xgboost-tab}
+\caption{The hyperparameters that Seneca considers for XGBoost. 
+The default value and tuning options are listed. 
+\label{tab:xgboost_para}}
+%\vspace{-0.2in}
+\end{table}
+
+\begin{table}[t]
+\centering
+%\scriptsize
+\input{hparams-svc-tab}
+\caption{The hyperparameters that Seneca considers for SVC. 
+The default value and tuning options are listed. 
+\label{tab:svc_para}}
+%\vspace{-0.2in}
+\end{table}
+
+\begin{table}[t]
+\centering
+%\scriptsize
+\input{hparams-nn-tab}
+\caption{The hyperparameters that Seneca considers for NN.
+The default value and tuning options are listed. 
+\label{tab:nn_para}}
 %\vspace{-0.2in}
 \end{table}
 
@@ -116,15 +139,22 @@ over the same period.  The application makes predictions for each of these outdo
 using the regression coefficients constructed from the training set
 and computes the mean square error between predicted and ground truth value pairs.
 
+
 XGBoost~\cite{ref:xgboost-web} is an open source framework for gradient boosting, which 
 performs both regression and classification. We consider it a regression application and
 a classification application in this evaluation.  
+The hyperparmeters and their defaults that Seneca uses in this study are listed in Table~\ref{tab:xgboost_para}. A definition for each hyperparameter can be found at~\cite{xgboostparams}.
+%xgboostparams: https://xgboost.readthedocs.io/en/latest/python/python_api.html#module-xgboost.sklearn
 Support vector classification (SVC)~\cite{ref:svc} is a classification algorithm 
 based on support vector machine and implemented by libsvm~\cite{ref:libsvm} library.
+The hyperparmeters and their defaults that Seneca uses for SVC in this study are listed in Table~\ref{tab:svc_para}. A definition for each hyperparameter can be found at~\cite{xvcparams}.
+%xvcparams: https://scikit-learn.org/stable/modules/generated/sklearn.svm.SVC.html
 Neural network~\cite{ref:neural_network} is a machine learning framework that learns 
 and make decisions from patterns in an input dataset. For this application, 
 we use a feedforward multilayer perceptron model~\cite{ref:feedforward_nn} 
 for the classification task.
+The hyperparmeters and their defaults that Seneca uses for Neural Network in this study are listed in Table~\ref{tab:nn_para}. A definition for each hyperparameter can be found at~\cite{nnparams}.
+%nn: https://scikit-learn.org/stable/modules/generated/sklearn.neural_network.MLPClassifier.html
 
 For these applications (XGBoost, SVC, and Neural Network), we use a labeled
 dataset for training, testing, and evaluation from this
@@ -135,12 +165,6 @@ features) include size, shape, weight, color, diameter, flatness, among other
 characteristics, for each fruit.  The label indicates which field the fruit
 was harvested from.  The applications train a model on a random subset of the
 data.  They then use this model to predict the field
-%%<<<<<<< HEAD %from which each fruit originates.  They compute classification
-%accuracy %as \textcolor{blue}{finish this.}.  XGBoost also computes MSE for
-%its regression task %on the same datasets.  The dataset has been filtered
-%authors to remove correlated %features (those with an absolute value of the
-%Pearson correlation coefficient greater than 0.8).  %The resulting dataset
-%contains 218150 rows (individual fruit) each with 19 features. 
 from which each fruit originates. They compute classification accuracy score
 as $\frac{1}{n}\sum_{i=1}^{n}1(Y_i = \hat{Y_i})$, where $Y_i$ is the
 prediction class, $Y_i$ is the true class, n is the number of samples and 1(x)
