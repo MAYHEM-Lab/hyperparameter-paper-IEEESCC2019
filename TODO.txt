@@ -1,0 +1,102 @@
+============================================================
+(A) For each classification application:
+      Run the steps below for a particular (but randomly selected) classification split (RATIO) of 80/20 
+
+	1) divide the dataset randomly into training and testing 
+		Use these two train/test datasets for step 2 
+		for all function instances (hyperparam settings)
+		- log the seed or some way of knowing how the data is split (so this is repeatable and
+			reproducible by others)
+
+	2) run seneca for each of hyperparameter combinations
+		time the seneca duration from when seneca adds hyperparameters to queue (and workers start executing) to the time that all workers complete
+			run seneca in EC2 with 8 cores or more so workers run in parallel
+			we will call this end2end time
+		log the execution time, memory use, and score in a DB (with the param settings)
+			for each function
+		do the above 30 times (same function/parameterization 30 times)
+
+	3) go to step 1 using a diff random split (but same split ratio)
+		do this 1 time (so we have two full datasets for two different random splits)
+
+	4) Create a spreadsheet with 4 worksheets: parameter map, execution time, memory, & score
+		parameter map:  #cols is # of parameters that are varied (omit all others)
+				label each col so we know what param you are referring to (shorten its name)
+				each row is a different parameter setting (value for each)
+		billed duration: each row is for a particular parameter setting (same rows as parameter map)
+				30 cols: one for each function run with this parameter setting
+				value is execution time reported by cloudwatch
+		memory used: each row is for a particular parameter setting (same rows as parameter map)
+				30 cols: one for each function run with this parameter setting
+				value is memory reported by cloudwatch
+		score: each row is for a particular parameter setting (same rows as parameter map)
+				30 cols: one for each function run with this parameter setting
+				value is score reported by Seneca for each parameter configuration
+The result of this experiment will be 
+8 spreadsheets -- each with 4 worksheets inside: one for
+	lrec_80-20_rand_split1: xgboost/MSE, xgboost/accuracy, svc, and NN
+	lrec_80-20_rand_split2: xgboost/MSE, xgboost/accuracy, svc, and NN
+	make sure and save off, in a shared location (paper repo), the lrec dataset before
+		and after filtering.  The post-filtering file is the one used in the
+		experiments with the 80/20 split
+=================================================================
+(B) For Prophet (6hrs/2hrs) and Multi-Regression (8 input files)	
+	1) run 30 times to get average and stdev for execution time and memory use
+	2) create a spreadsheet the same as in part (A) above each with 4 worksheets
+We will not investigate different splits for these 2.
+The result of this experiment will be 
+2 spreadsheets -- each with 4 worksheets inside: one for
+	prophet and multi-regression
+=================================================================
+From A and B above, fix the paper:
+	-report execution time (latency) as an average and stddev
+	-show evidence that answers the question: is memory use by Seneca functions 
+		independent of hyperparameter values used? 
+		for each ML task type? (reg and classification)
+		if no (say for regression): then maybe there is a "cheaper" set of hyperparameters
+			(investigate this)
+	- analyze the parameter settings and scores from (A) to answer the question:  
+	is the winning hyperparameter setting independent of the data split?
+		- Seneca currently costs over 300x more than just running the default once (and provides 
+		only a minor score improvement).
+		if we can say yes, then we can say that once we make a parameter selection
+		we can use it on other datasets/splits without retraining, right?
+		- think about a way of overcoming this argument (that the cost is somehow
+		amortized or worth it)
+
+=================================================================
+(C) Stretch goal: 
+	question to be answered: is the winning hyperparameter setting 
+	independent of the data split?
+	to answer:  Find a new dataset that is used in the papers of others that is popular
+		and well known, and that will work with XGBoost, SVG, and NN
+		- it should be one for which you believe the split  
+			does not impact the choice of best parameterization
+		1) Run (A) above using this new dataset
+	
+The result of this experiment will be 
+8 spreadsheets -- each with 4 worksheets inside: one for
+	dataset_name_80-20_rand_split1: xgboost/MSE, xgboost/accuracy, svc, and NN
+	dataset_name_80-20_rand_split2: xgboost/MSE, xgboost/accuracy, svc, and NN
+	make sure and save off, in a shared location (paper repo), the dataset 
+		before and after filtering if any filtering is done.
+=================================================================
+(D) Stretch goal: 
+	fix for the paper: we state we consider all possible combinations of parameter settings
+		but in the current version of seneca this is not true: we consider combinations
+		of the list specified by the programmer
+		fix: change parameter value lists to ranges + step, and run all combinations
+			in the range (by step)
+		fix: consider more parameters (are there others we omit to search in this 
+			paper that we can/should; for all, use a wider range of values)
+			- make sure that the range includes the default value
+		1) Run (A) above for the full set of parameters
+		2) Run (C) above for the full set of parameters
+	
+The result of this experiment will be 
+16 spreadsheets -- each with 4 worksheets inside: one for (these replace the 8 from (A) and (B) above)
+	dataset_name_80-20_rand_split1: xgboost/MSE, xgboost/accuracy, svc, and NN
+	dataset_name_80-20_rand_split2: xgboost/MSE, xgboost/accuracy, svc, and NN
+	make sure and save off, in a shared location (paper repo), the dataset 
+		before and after filtering if any filtering is done.
+=================================================================
