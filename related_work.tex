@@ -3,7 +3,7 @@ on serverless computing and machine learning model optimization.
 
 Multiple researchers have investigated the efficacy and overhead of the
 serverless programming model and 
-implementations~\cite{ref:baldini2017,ref:jonas2017occupy,ref:onesteptwostep,ref:lin2018tracking}.
+implementations~\cite{ref:jonas2017occupy,ref:onesteptwostep, ref:baldini2017,ref:lin2018tracking}.
 The authors in \cite{ref:onesteptwostep} evaluates the cost and performance of using
 serverless for data-intensive computing.  They identify some key weaknesses in AWS
 Lambda for this application domain including the inability to effectively train models.
@@ -11,7 +11,7 @@ Our work show that it is possible for the subset of machine learning application
 consider, to train models in a cost effective ways.
 
 %\cite{ref:baldini2017} identifies multiple open research questions surrounding serverless,
-%including whether or not functions should be stateless. PyWren~\cite{ref:jonas2017occupy} provides us 
+including whether or not functions should be stateless. PyWren~\cite{ref:jonas2017occupy} provides us 
 a new perspective of stateless function being a natural fit for distributed computing models, because it 
 abstracts away cluster management overhead and is ideal for embarrassingly parallel jobs. 
 ExCamera~\cite{ref:encoding} presents a 
@@ -49,7 +49,7 @@ black-box optimization. Optunity~\cite{ref:claesen2014hyperparameter}
 proposes a Python library for hyperparameter tuning. 
 This can be considered as precursory work of Hyperopt~\cite{ref:hyperopt}, 
 which is a more advanced Python library for serial and parallel hyperparameter 
-optimization over awkward search space. Hyperas ~\cite{ref:hyperas} adds another 
+optimization over awkward search space. Hyperas~\cite{ref:hyperas} adds another 
 abstraction layer to hyperopt and facilitates the hyperparameter tuning for 
-Keras ~\cite{ref:keras}. However, no extant work of which we are aware leverages
+Keras~\cite{ref:keras}. However, no extant work of which we are aware leverages
 serverless to perform hyperparameter tuning in parallel. 

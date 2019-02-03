@@ -216,7 +216,7 @@ target whose number greatly exceeds other ones. The resulting dataset contains
 To evaluate Seneca, we measure tuning performance, application execution time,
 and monetary cost.  For tuning performance, we use mean squared error (MSE)
 for regression tasks and percentage accuracy for classification tasks (i.e. we score
-model prediction accuracy and not explanatory power).  Because we use the name 
+model prediction accuracy and not explanatory power).  Because we use the same 
 total number of hyperparameters for each model, the penalty function in terms of 
 Bayesian Information Criteria, is the same. Thus, we can compare models using
 this score.
@@ -335,7 +335,7 @@ difference between red notch of lowest data point is improvement brought about
 through the use of Seneca. From the location of red notch, we can see the MSE
 metrics from default configuration in three applications are close to the
 first quartile value in all three cases (slightly greater that Q1 for Prophet
-and Multi-regression and slight less for XGBoost).  However Seneca's MSE
+and Multi-regression and slight less for XGBoost). However, Seneca's MSE
 performance is congruent with the end of the lower whisker.  Overall, however,
 the quality of the application's output (for a given dataset) is dramatically
 affected by hyperparameter settings.  Perdictably the default settings are
@@ -463,7 +463,7 @@ cost of these probes
 %Because memory impacts both
 %cost and execution time (total latency of Seneca hyperparameter tuning), we
 %present empirically evaluate both in this subsection.  
-Note that XGBoost's performance profile is identical when used for reghression
+Note that XGBoost's performance profile is identical when used for regression
 or classification so we include its measurements only once in the following
 analysis.
 %For each, we only
@@ -484,7 +484,7 @@ Seneca Cost (\$) & 0.722 & 0.121 & 0.5 & 0.023 & 0.072 \\
 \end{tabular}
 \caption{Monetary cost of using Seneca for hyperparameter tuning when configured to use the maximum amount of memory (3008 MB) possible for each function invocation. 
 \label{tab:cost_max_memory}}
-\vspace{-0.2in}
+%\vspace{-0.2in}
 \end{table}
 
 \begin{table}
