@@ -29,7 +29,7 @@ the machine learning application and any libraries it requires,
 and compresses the application and uploads it to S3 (avoiding
 the AWS Lambda handler size restriction of 10MB).
 Seneca constructs an AWS Lambda handler from a template
-that when executed will download and uncompress the application,
+that, when executed, will download and uncompress the application,
 download the dataset and split it into a training and testing set,
 and construct, test, and evaluate a model using the application
 and a set of hyperparameter values passed in by Seneca as arguments.
@@ -76,7 +76,7 @@ in the same way as is done for general purpose Amazon EC2 instance types.
 \end{figure}
 
 
-To verify such claim, we conduct an experiment in which
+To verify that assertion, we conduct an experiment in which
 we increase of CPU power and memory for a compute-bound 
 AWS Lambda function (a microbenchmark that performs 3-D matrix multiplication~\cite{ref:matrix}).
 We configure function instances to use the 46 possible allocated 
@@ -97,7 +97,7 @@ Seneca to optimize its cost (compute charge) via an extension
 that enables it to automatically identify the appropriate
 setting for allocated memory for each application.
 However, instead of exhaustively testing all 46 possible 
-memory configurations (increasing its cost), 
+memory configurations, which might be costly,  
 Seneca employs the heuristic outlined in
 Algorithm~\ref{algo:optimizer}. 
 
@@ -175,7 +175,7 @@ for other datasets (to amortize the time/cost of Seneca) without retraining.
 
 We assume that the dataset supplied to Seneca by the user
 is representative of datasets on which the 
-resulting model will be use.  In addition, we use prediction error as the 
+resulting model will be used.  In addition, we use prediction error as the 
 score (i.e., mean squared error for regression and accuracy percentage for classification) 
 instead of $R^2$, which describes explanatory power, to avoid overfitting.
 As part of future work, we are considering using multiple datasets and a ranges

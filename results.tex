@@ -338,7 +338,7 @@ first quartile value in all three cases (slightly greater that Q1 for Prophet
 and Multi-regression and slight less for XGBoost). However, Seneca's MSE
 performance is congruent with the end of the lower whisker.  Overall, however,
 the quality of the application's output (for a given dataset) is dramatically
-affected by hyperparameter settings.  Perdictably the default settings are
+affected by hyperparameter settings.  Predictably the default settings are
 near the ``good'' end of the spectrum, but as both Table~\ref{tab:mse} and
 Figure~\ref{fig:box_plot_mse} indicate, Seneca is able to find
 parameterization that improves output quality over the default settings
@@ -362,7 +362,7 @@ better) reported by each application (3 right-most columns) for the default,
 worst, and best hyperparameter tuning configurations reported by Seneca.
 using an 80/20 (train/test) percent split,
 Seneca increases accuracy by 3.43\%, 62.52\%, and 0.53\%, for XGBoost
-(classification), SVC, and NN applications, respectively.  Verses
+(classification), SVC, and NN applications, respectively.  Compared to
 the worst case, Seneca improves accuracy by 99.13\%, 75.75\%, and 65.57\%,
 respectively.
 
@@ -437,20 +437,21 @@ for the entire hyperparameter search space for each classification
 application.  The central rectangle covers from first quartile to third quartile (Q3 - Q1) and the whiskers span from \texttt{$(Q3 + 2 * IQR)$} to \texttt{$(Q1 - 2 * IQR)$}. The red notch indicates the accuracy metric from the model trained by default settings and colored diamonds are outliers beyond whiskers.
 For both types of applications (regression and classification), Seneca significantly
 improves tuning performance over the default and worst case configurations for 
-XGBoost and SVC while generating only a small improvement over default for NN.
+XGBoost and SVC while generating only a small improvement over the
+default for NN.  
 
 
 \subsection{Cost Analysis}
 
-We next analyze the monetary cost effects introduced by Seneca.  To do so, we
+We next analyze the monetary costs incurred by Seneca.  To do so, we
 use Seneca to find the hyperparameterization that optimizes application output
 quality (lowest MSE for regression, highest accuracy for classification).
-However note that trying all possible hyperparameterizations incurs a cost.
-Further, because Seneca uses AWS Lambda, the amount of memory it uses during
-tuning affects this cost. 
+For each hyperparameteriyation that Seneca evaluates, it incurs a
+cost. Furthermore, the amount of memory used by Seneca during memory
+tuning also influeces overall cost.
 
-
-Thus we compare two Seneca execution configurations.  In the first
+Thus, instead of trying out all possible settings,  we compare two
+Seneca execution configurations.  In the first 
 we configure each lambda function to
 use the maximum amount of memory allowed by AWS Lambda (3008 MB) for all
 executions.
@@ -539,7 +540,10 @@ execution) for some of the applications.  That is, the
 execution times for all applications except SVC increase when Seneca chooses
 a memory size.  Thus while Seneca is finding the best application output
 quality and optimizing the cost of producing that output, it is doing so at
-the expense of execution performance (time to solution). Such penalty is expected due to the proportional CPU power to allocated memory. However, Seneca optimizer is able to find the optimal memory configuration to minimize such penalty. In the case of SVC, Seneca saves 30\% compared to max memory execution (\$0.016 vs \$0.023) but has the same execution time (0.91 minutes).
+the expense of execution performance (time to solution). Such a penalty
+is expected due to the proportional CPU power to allocated
+memory. However, the Seneca optimizer is able to find the optimal
+memory configuration to minimize that  penalty. In the case of SVC, Seneca saves 30\% compared to max memory execution (\$0.016 vs \$0.023) but has the same execution time (0.91 minutes).
 % The source of this execution performance penalty is not clear.  We hypothesize
 % that when requesting a large memory for AWS Lambda, Amazon chooses a machine
 % that also has fast processors so the Lambda functions execute more quickly.
