@@ -1,0 +1,8 @@
+*.DS_Store
+*.aux 
+*.bbl 
+*.blg 
+*.dvi 
+*.log 
+paper.pdf 
+paper.out

@@ -39,7 +39,7 @@ The serverless framework~\cite{ref:serverless_framework} contributes an
 automated packaging and deployment toolset for serverless functions across clouds. 
 The serverless framework uses Cloudformation~\cite{ref:cloudformation} to package and deploy Lambda function, which introduces additional cost. Seneca uses local docker container to avoid this cost
 and overhead. The cloud infrastructure provisioning framework Terraform~\cite{ref:terraform} 
-also provides automated deployment of functions to serverless platforms, but it does not simulate the AWS Lamdba runtime to create the deployment package (doing so on a non-Linux system will result in Lambda errors and failures at execution time). 
+also provides automated deployment of functions to serverless platforms, but it does not simulate the AWS Lambda runtime to create the deployment package (doing so on a non-Linux system will result in Lambda errors and failures at execution time). 
 In addition, AWS CodeDeploy~\cite{ref:codedeploy} serves as component in the continuous integration and delivery pipeline for serverless architectures, but it also introduces monetary cost overhead
 to do so.
 

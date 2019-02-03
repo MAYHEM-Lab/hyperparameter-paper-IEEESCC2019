@@ -6,15 +6,15 @@ the serverless programming model and its implementation in Amazon Web Services
 (AWS) Lambda.  
 Seneca takes a machine learning application, dataset, and a list of 
 possible hyperparameter options.  It automatically constructs an AWS Lambda
-handler that invokes the application, ingresses and splits the dataset into training
+handler that ingresses and splits the dataset into training
 and testing portions, and constructs, tests, and evaluates (i.e. scores) a machine
 learning model for a given set of hyperparameter values.  Seneca orchestrates
 this execution in parallel for all possible combinations of the hyperparameters specified.
-It then returns the configuration (and model) that results in the best score 
+It then returns the configuration (or model) that results in the best score 
 to the user.  
 
 We present the design and implementation of Seneca and introduce an extension to the
-system that automaticallly optimizes memory use by the functions.  
+system that automatically optimizes memory use by the functions.  
 Our empirical evaluation using
 multiple machine learning applications for regression and classification (using
 the models for prediction and not explanatory value), shows that Seneca is able to quickly

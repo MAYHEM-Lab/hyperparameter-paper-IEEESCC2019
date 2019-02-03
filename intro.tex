@@ -10,8 +10,8 @@ or as required by executing applications.
 
 To date however, cloud use has been limited to large-scale 
 implementations of enterprise services, such as
-object storage, databases, queuing systems, and web and application servers.
-The reason for this is that it is very
+object storage, databases, queuing systems, and web application servers.
+The reason is that it is very
 challenging, even for expert users, to configure complex
 distributed systems for application use, 
 and to leverage the elasticity (auto-scaling) that
@@ -20,8 +20,8 @@ have started to offer cloud programming and execution environments
 under the moniker of \textit{serverless} 
 computing~\cite{ref:jonas2017occupy, ref:onesteptwostep, ref:peeking}.  Serverless
 systems automatically configure, manage, and scale applications
-to significantly simplify and broaden participation in (by less expert
-users) the use of cloud systems.
+to significantly simplify and broaden participation (by less expert
+users) in the use of cloud systems.
 %xxx: http://shivaram.org/publications/pywren-socc17.pdf
 %yyy: http://cidrdb.org/cidr2019/papers/p119-hellerstein-cidr19.pdf
 %zzz: L. Wang, M. Li, Y. Zhang, T. Ristenpart, and M. Swift. “Peek- ing Behind the Curtains of Serverless Platforms”. In: USENIX ATC. Boston, MA: USENIX Association, 2018
@@ -31,7 +31,7 @@ arbitrary computations in high level languages
 as stateless functions to these cloud-hosted services, along with a
 specification conditions under which each
 function should be triggered.  Functions are invoked (triggered)
-automatically by the cloud in response to updates to other cloud services
+automatically by the cloud in response to external events or updates to other cloud services
 (e.g. storage, queues, notification services, among others). They
 communicate, persist, and access data only 
 via their inputs or shared, remote storage.  
@@ -54,7 +54,7 @@ doing so will result in high overhead (i.e. be costly) because
 of the stateless nature of serverless functions~\cite{ref:onesteptwostep}.
 At the same time, identifying the ``best'' configuration for advanced
 machine learning models is challenging given the large number of configuration
-options, i.e., hyperparameters, typical of models today.
+options (i.e. hyperparameters) typical for models today.
 Hyperparameters govern the learning process of machine learning applications.
 Given that parameter sweeps are embarrassingly parallel, we believe
 that such tuning is a good fit for the serverless model.
@@ -64,7 +64,7 @@ we design and develop a new system and toolset called \textit{Seneca}.
 
 Specifically, Seneca implements, packages, and deploys 
 machine learning applications as stateless functions to AWS Lambda.
-It then orchestrates exhaustive evaluation of hyperparameter settings
+It then orchestrates exhaustive evaluation of specified hyperparameter settings
 to identify the best performing model (for a given dataset) by
 comparing the error and accuracy across models.  We consider
 prediction accuracy (as opposed to explanatory power) as the

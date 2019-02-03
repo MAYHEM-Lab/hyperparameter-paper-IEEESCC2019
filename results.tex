@@ -147,17 +147,17 @@ and computes the mean square error between predicted and ground truth value pair
 XGBoost~\cite{ref:xgboost-web} is an open source framework for gradient boosting, which 
 performs both regression and classification. We consider it a regression application and
 a classification application in this evaluation.  
-The hyperparmeters and their defaults that Seneca uses in this study are listed in Table~\ref{tab:xgboost_para}. A definition for each hyperparameter can be found at~\cite{ref:xgboostparams}.
+The hyperparameters and their defaults that Seneca uses in this study are listed in Table~\ref{tab:xgboost_para}. A definition for each hyperparameter can be found at~\cite{ref:xgboostparams}.
 %xgboostparams: https://xgboost.readthedocs.io/en/latest/python/python_api.html#module-xgboost.sklearn
 Support vector classification (SVC)~\cite{ref:svc} is a classification algorithm 
 based on support vector machine and implemented by libsvm~\cite{ref:libsvm} library.
-The hyperparmeters and their defaults that Seneca uses for SVC in this study are listed in Table~\ref{tab:svc_para}. A definition for each hyperparameter can be found at~\cite{ref:svcparams}.
+The hyperparameters and their defaults that Seneca uses for SVC in this study are listed in Table~\ref{tab:svc_para}. A definition for each hyperparameter can be found at~\cite{ref:svcparams}.
 %xvcparams: https://scikit-learn.org/stable/modules/generated/sklearn.svm.SVC.html
 Neural network (NN)~\cite{ref:neural_network} is a machine learning framework that learns 
 and make decisions from patterns in an input dataset. For this application, 
 we use a feed-forward multi-layer perceptron model~\cite{ref:feedforward_nn} 
 for the classification task.
-The hyperparmeters and their defaults that Seneca uses for Neural Network in this study are listed in Table~\ref{tab:nn_para}. A definition for each hyperparameter can be found at~\cite{ref:nnparams}.
+The hyperparameters and their defaults that Seneca uses for Neural Network in this study are listed in Table~\ref{tab:nn_para}. A definition for each hyperparameter can be found at~\cite{ref:nnparams}.
 %nn: https://scikit-learn.org/stable/modules/generated/sklearn.neural_network.MLPClassifier.html
 
 For these applications (XGBoost, SVC, and NN), we use a labeled
@@ -360,7 +360,7 @@ in each case.
 We next empirically evaluate the tuning performance of Seneca for the three
 classification applications: XGBoost (classification), SVC, and NN.
 Table~\ref{tab:accuracy} presents the accuracy percentage (higher is
-better) reported by each application (3 right-most columns) for the default,
+better) reported by each application (3 rightmost columns) for the default,
 worst, and best hyperparameter tuning configurations reported by Seneca.
 using an 80/20 (train/test) percent split,
 Seneca increases accuracy by 3.43\%, 62.52\%, and 0.53\%, for XGBoost
