@@ -6,10 +6,11 @@ User specifies hyperparameter options in the configuration file and provides lam
 % \vspace{-0.2in}
 \end{figure}
 
-To facilitate model optimization on serverless architecture, we have developed Seneca, 
-a framework for tuning the hyperparameters for machine learning applications 
+To facilitate model search and selection using the serverless architecture, 
+we have developed Seneca, 
+a framework for tuning the hyperparameters of machine learning applications 
 in AWS Lambda. 
-The Seneca pipeline consists of packaging, deployment, serverless 
+The Seneca pipeline consists of packaging, deployment, 
 function optimization, and hyperparameter tuning. Figure~\ref{fig:seneca} 
 shows the architecture of Seneca.  In the the upper-right-front, we
 show the three inputs that Seneca expects from its users: a hyperparameter
@@ -18,8 +19,8 @@ the machine learning application.
 The configuration file
 specifies the range of values for each hyperparameter that the 
 application expects.  Seneca uses this configuration to construct
-the hyperparameter search space.  The dataset URL is a link to a
-valid dataset stored in S3.  
+the hyperparameter search space.  The dataset URL refers to a
+valid dataset stored in AWS S3.  
 
 Seneca automatically builds and deploys a AWS Lambda application
 from the machine learning application specified.
@@ -38,28 +39,30 @@ default is 80\%/20\% for classification tasks.
 The handler returns a testing score. 
 Upon completion of this process, the container deploys the handler
 to AWS Lambda using the
-AWS Command line Interface~\cite{ref:awscli}.
+AWS Command line Interface\footnote{\url{https://aws.amazon.com/cli/}} 
+and the developers credentials.
 
 
 
 \subsection{Optimizing Memory Use}
 
 The AWS Lambda pricing model is determined by the execution duration 
-and memory. The cost of a function instance is referred to as 
-\texttt{compute charge}, and is calculated as the amount of 
-allocated memory multiplied by the
+and memory of each invoked function. The cost of a function instance is referred to as 
+the \texttt{compute charge}, which is the allocated memory 
+multiplied by the
 billed duration (execution time rounded up to the 
-nearest 100ms)~\cite{ref:pricing}.
+nearest 100ms)~\footnote{\url{https://aws.amazon.com/lambda/pricing/}}.
 %https://aws.amazon.com/lambda/pricing/
 To ensure that we keep the cost of Seneca as low as possible, we investigate
 the impact of this pricing model on application execution and use
 our findings to optimize cost.
 
 Currently, allocated memory for a Lambda function can be set
-between 128MB and 3008MB using increments of 64MB.
-AWS documentation~\cite{ref:lambdalimits} states that Lambda 
-allocates CPU to functions in way that is proportional to allocated memory size,
-in the same way as is done for general purpose Amazon EC2 instance types.
+from 128MB to 3008MB in increments of 64MB.
+AWS documentation~\footnote{\url{https://docs.aws.amazon.com/lambda/latest/dg/resource-model.html}} 
+states that Lambda 
+allocates CPU in a way that is proportional to allocated memory size,
+as is done for general purpose AWS EC2 instance types.
 
 \begin{figure}[t] \centering 
 \includegraphics[scale=0.5]{memory}
@@ -76,22 +79,20 @@ in the same way as is done for general purpose Amazon EC2 instance types.
 \end{figure}
 
 
-To verify that assertion, we conduct an experiment in which
-we increase of CPU power and memory for a compute-bound 
-AWS Lambda function (a microbenchmark that performs 3-D matrix multiplication~\cite{ref:matrix}).
+To evaluate the impact of memory and CPU allocation on application cost,
+we analyze a 3-D matrix multiple serverless benchmark~\cite{ref:matrix} using AWS Lambda.
 We configure function instances to use the 46 possible allocated 
-memory increments, invoke them, and record the billed duration and memory
-use of each.
-Figure~\ref{fig:memory} shows the relationship between allocated memory (x-axis) and reciprocal of billed duration (y-axis). 
-Figure ~\ref{fig:compute_charge} shows the relationship between memory 
+memory increments, invoke them, and record the billed duration and memory used by each.
+Figure~\ref{fig:memory} shows the relationship between allocated memory 
+(x-axis) and reciprocal of billed duration (y-axis). 
+Figure~\ref{fig:compute_charge} shows the relationship between memory 
 size (x-axis) and compute charge (y-axis). 
-We observe that for this simple benchmark,
+We observe that for this benchmark,
 the CPU power plateaus after 1600 MB. 
 Correspondingly, the compute charge declines from 128 MB to 1600 MB 
 and then increases linearly. 
 
-
-These findings show that CPU does not proportionally increase with
+These findings show that CPU does not increase proportionally with
 an increase in allocated memory.  We use this relationship within
 Seneca to optimize its cost (compute charge) via an extension
 that enables it to automatically identify the appropriate
@@ -105,18 +106,18 @@ The Seneca optimizer first configures and invokes the function using
 a user-defined payload.  From this run, Seneca obtains the memory 
 used by function (reported by AWS Cloudwatch), 
 which it uses as its starting point.
-Seneca then defines two double-end queues 
+Seneca then defines two double-ended queues 
 (deque) of length N, to store 
 allocated memory and compute charge data of different
 invocations. While the current 
 allocated memory is less than or equal to 3008 MB, 
-the optimizer continues reconfigures and invokes the function 
+the optimizer reconfigures and invokes the function 
 using the next increment for memory allocation.  It 
 calculates the compute charge for each invocation 
 using current allocated memory and billed duration. 
 
 We employ two exit conditions.  The first is when the 
-compute charge monotonically increases across the length of deque. 
+compute charge monotonically increases across the deque. 
 The second is when the increase in slope is greater than a threshold. 
 Once the optimizer finds that both conditions hold, 
 it pops the left-most value from deque and configures 
@@ -125,7 +126,7 @@ After extensive experimentation, we find that
 N=5 and a slope threshold of 1 work well in most cases.
 These values can be changed by users of the system however.
 In addition, this optimization can be turned on or off via a command line
-flag when starting Seneca.
+argument to Seneca.
 
 \begin{algorithm}[]
 \SetAlgoLined
@@ -156,17 +157,17 @@ Celery~\cite{ref:celery}. Celery is an asynchronous task queue
 that uses distributed message passing. Celery workers are processes 
 that take tasks from the queue, execute the tasks with the arguments specified, 
 and store the result that is returned 
-in a database (we use Redis~\cite{ref:redis} in our prototype). 
+in a database (we use Redis~\footnote{\url{https://redis.io/}} in our prototype). 
 
 Based on the configuration file, Seneca creates a list of 
-payloads (function arguments) that contains values of 
-hyperparameters.  The complete list contains all combinations of the
-specified parameter
+payloads (function arguments) with
+hyperparameter values.  
+The complete list contains all combinations of the specified parameter
 settings.  Seneca places the list on the queue and celery 
 workers invoke the Lambda handler of the application, passing in the
 payload (hyperparameter values) to the handler to use for model construction.  
 Upon function
-termination, the work records the evaluation score (and serialized model)
+termination, the worker records the evaluation score (and serialized model)
 in the database with the hyperparameter configuration from the payload.
 When the queue is drained and all workers have completed, Seneca
 extracts and reports the best score, configuration, and model from the database.

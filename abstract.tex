@@ -7,20 +7,18 @@ the serverless programming model and its implementation in Amazon Web Services
 Seneca takes a machine learning application, dataset, and a list of 
 possible hyperparameter options.  It automatically constructs an AWS Lambda
 handler that ingresses and splits the dataset into training
-and testing portions, and constructs, tests, and evaluates (i.e. scores) a machine
-learning model for a given set of hyperparameter values.  Seneca orchestrates
-this execution in parallel for all possible combinations of the hyperparameters specified.
+and testing subsets, and constructs, tests, and evaluates (i.e. scores) a machine
+learning model for a given set of hyperparameter values.  Seneca concurrently invokes
+functions for all combinations of the hyperparameters specified.
 It then returns the configuration (or model) that results in the best score 
 to the user.  
 
 We present the design and implementation of Seneca and introduce an extension to the
 system that automatically optimizes memory use by the functions.  
-Our empirical evaluation using
-multiple machine learning applications for regression and classification (using
-the models for prediction and not explanatory value), shows that Seneca is able to quickly
-identify the best performing model,
-for the datasets and algorithms that we study. 
-Moreover, our memory optimization reduces the cost of using
-Seneca by 10-30\% for the applications studied.
+Our empirical evaluation using multiple predictive machine learning applications 
+for regression and classification shows that Seneca is able to quickly
+identify the best performing model for the programs and datasets that we consider.
+Moreover, its memory optimization reduces the cost of using Seneca 
+by 10-30\% for the applications studied.
 
 %The involvement of manual operations and domain expertise makes traditional model optimization process expensive, time-consuming and not guaranteed the optimal solution. The emergence of serverless computing offers the potential to optimize models in an auto-scaling and micro-billing fashion. In this paper, we present Seneca -- a framework for machine learning model optimization on serverless computing platform. Its automated pipeline consists of packaging, deployment, serverless function optimization and hyperparameter tuning, which provides a cost-effective, high-performing and reliable model optimization service. We evaluate Seneca by performance, cost and latency analysis on multiple regression and classification applications. The result demonstrates Seneca streamlines model deployment and optimization in agile and economical fashion.

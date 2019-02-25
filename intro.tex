@@ -4,51 +4,51 @@ investment.  Cloud users ``rent'' virtualized resources (while sharing
 the underlying physical resources) on a pay-per-use basis
 in exchange for availability guarantees specified via service level
 agreements (SLAs). Uniquely, cloud systems can be configured 
-to add and remove resources and services,
-automatically and on-demand, based on load 
-or as required by executing applications.
+to add and remove (i.e. auto-scale) resources and services
+automatically, based on the ``elastic'' resource requirements and service needs 
+of executing applications.
 
-To date however, cloud use has been limited to large-scale 
-implementations of enterprise services, such as
-object storage, databases, queuing systems, and web application servers.
-The reason is that it is very
-challenging, even for expert users, to configure complex
+To date however, clouds are used more for
+enterprise services (object stores, databases, application servers, etc.)
+than for elastic applications.
+The reason for this is that it is challenging to configure complex
 distributed systems for application use, 
-and to leverage the elasticity (auto-scaling) that
+and to leverage the auto-scaling that
 clouds offer. To address this challenge, cloud providers 
-have started to offer cloud programming and execution environments
-under the moniker of \textit{serverless} 
-computing~\cite{ref:jonas2017occupy, ref:onesteptwostep, ref:peeking}.  Serverless
-systems automatically configure, manage, and scale applications
-to significantly simplify and broaden participation (by less expert
-users) in the use of cloud systems.
+have started to offer programming and execution environments
+that preclude the need for server configuration,
+under the \textit{serverless} moniker~\cite{ref:jonas2017occupy,ref:onesteptwostep,ref:peeking}.  
+Serverless platforms automatically configure, manage, and scale applications
+to significantly simplify cloud use.
+%and broaden participation (by less expert
+%users) in the use of cloud systems.
 %xxx: http://shivaram.org/publications/pywren-socc17.pdf
 %yyy: http://cidrdb.org/cidr2019/papers/p119-hellerstein-cidr19.pdf
 %zzz: L. Wang, M. Li, Y. Zhang, T. Ristenpart, and M. Swift. “Peek- ing Behind the Curtains of Serverless Platforms”. In: USENIX ATC. Boston, MA: USENIX Association, 2018
 
-Using the serverless model, applications developers upload 
+Using the serverless model, application developers upload 
 arbitrary computations in high level languages
-as stateless functions to these cloud-hosted services, along with a
-specification conditions under which each
-function should be triggered.  Functions are invoked (triggered)
-automatically by the cloud in response to external events or updates to other cloud services
-(e.g. storage, queues, notification services, among others). They
+as stateless functions to cloud-hosted, serverless platforms.
+Functions are invoked (i.e. triggered)
+automatically by the cloud in response to updates to other cloud services
+(e.g. storage, queues, notification services, and API gateways, among others), which 
+the developer configures. Serverless functions
 communicate, persist, and access data only 
-via their inputs or shared, remote storage.  
+through their inputs or via shared, storage services.  
 As a result, serverless applications are inherently elastic and can 
 implement highly concurrent and parallel tasks.
 In public clouds, users pay a small fee for the resources their 
 functions use during execution, resulting in very low cost cloud use.
 Although now available from all public cloud providers and as open 
 source for private cloud systems, 
-AWS Lambda~\cite{ref:awslambdadg} was the first and is now the 
-most popular and most advanced serverless public cloud service 
-available today.
+Amazon Web Services (AWS) Lambda\footnote{\url{https://docs.aws.amazon.com/lambda/latest/dg/lambda-dg.pdf}} %~\cite{ref:awslambdadg} 
+was the first and is the most widely used
+serverless public cloud platform.
 %awslambda: https://docs.aws.amazon.com/lambda/latest/dg/lambda-dg.pdf
 
 In this work, we investigate the efficacy of using AWS Lambda
 for tuning machine learning applications.
-To date, Lambda has not be heavily used for training and evaluating
+To date, Lambda is not widely used for training and evaluating
 machine learning models because of a concern that 
 doing so will result in high overhead (i.e. be costly) because
 of the stateless nature of serverless functions~\cite{ref:onesteptwostep}.
@@ -59,39 +59,35 @@ Hyperparameters govern the learning process of machine learning applications.
 Given that parameter sweeps are embarrassingly parallel, we believe
 that such tuning is a good fit for the serverless model.
 To investigate this potential, its overhead, and to simplify the 
-use of Lambda for training, testing, and evaluation machine learning models, 
+use of Lambda for training, testing, and evaluation of machine learning models, 
 we design and develop a new system and toolset called \textit{Seneca}.
 
-Specifically, Seneca implements, packages, and deploys 
+Seneca implements, packages, and deploys 
 machine learning applications as stateless functions to AWS Lambda.
 It then orchestrates exhaustive evaluation of specified hyperparameter settings
 to identify the best performing model (for a given dataset) by
-comparing the error and accuracy across models.  We consider
+comparing error and accuracy across models.  We consider
 prediction accuracy (as opposed to explanatory power) as the
 scoring metric (mean squared error for regression 
-and accuracy percent for classification), to avoid overfitting.
+and accuracy percentage for classification), to avoid overfitting.
 Users present Seneca with their application, a range of values for 
 each hyperparameter (or the default can be used), and a representative dataset.
 Seneca produces, tests, and evaluates models for all combinations 
 of hyperparameters and returns to the user
 the set of parameters (or the model itself) that produces
-the best cross-validation score (e.g. lowest squared error or highest
-accuracy) for the dataset. Users can employ this model for other datasets
+the best cross-validation score.
+Users can employ this model for other datasets
 (with Seneca if desired) without retraining the model to amortize the cost
 of Seneca further.
 
 We deploy Seneca on AWS Lambda and evaluate its tuning performance, cost,
 and memory use for six machine learning applications and datasets. We 
-find that Seneca is effective for quickly training these
-models and identifying the best performing hyperparameter setting for 
-these applications. We also find 
-Seneca to be very low cost and able to automatically 
-identify the 
-best memory configuration for each application further lowering its 
+find that Seneca is fast, inexpensive, and effective for model 
+construction and comparison. Seneca is also able to identify
+automatically the
+best memory configuration for each application, further lowering its cost
 by 10-30\%.
-As such, Seneca greatly simplifies model construction and comparison and 
-does so with very low latency and at very low cost.
-We intend to make Seneca and the applications available as open source
+We intend to make Seneca, its applications, and their datasets publicly available
 when/if this paper is accepted for publication.  In the sections
 that follow, we overview our design and implementation of Seneca and then
 present our empirical methodology and results.

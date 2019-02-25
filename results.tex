@@ -1,3 +1,4 @@
+
 \begin{table}[t]
 \centering
 \input{tables/application-tab}
@@ -6,15 +7,8 @@ to evaluate Seneca.
 %paper submission is blind (so such references must be omitted so as not to reveal our identities):
 %Code base is available at project repository~\cite{ref:seneca}.
 \label{tab:bmarks}}
-\vspace{-0.2in}
+%\vspace{-0.2in}
 \end{table}
-
-In this section,
-we evaluate Seneca in terms of performance, monetary cost, 
-and hyperparameter tuning execution time, 
-for different machine learning applications.
-We first overview these applications and our empirical methodology. 
-We then present our experimental results. 
 
 \begin{table}[t]
 \centering
@@ -27,7 +21,7 @@ The default value and tuning options are listed.
 
 \begin{table}[t]
 \centering
-\scriptsize
+%\scriptsize
 \input{tables/hparams-xgboost-tab}
 \caption{The hyperparameters that Seneca considers for XGBoost. 
 The default value and tuning options are listed. 
@@ -37,7 +31,7 @@ The default value and tuning options are listed.
 
 \begin{table}[t]
 \centering
-\scriptsize
+%\scriptsize
 \input{tables/hparams-svc-tab}
 \caption{The hyperparameters that Seneca considers for SVC. 
 The default value and tuning options are listed. 
@@ -47,13 +41,20 @@ The default value and tuning options are listed.
 
 \begin{table}[t]
 \centering
-\scriptsize
+%\scriptsize
 \input{tables/hparams-nn-tab}
 \caption{The hyperparameters that Seneca considers for NN.
 The default value and tuning options are listed. 
 \label{tab:nn_para}}
 \vspace{-0.2in}
 \end{table}
+
+In this section,
+we evaluate Seneca in terms of performance, monetary cost, 
+and hyperparameter tuning execution time, 
+for different machine learning applications.
+We first overview these applications and our empirical methodology. 
+We then present our experimental results. 
 
 \subsection{Benchmark Applications and Training/Testing  Datasets}
 The machine learning applications that we use to evaluate Seneca 
@@ -79,18 +80,19 @@ is set using \textit{interval width}.
 
 In the results that follow, we evaluate \textit{default} parameterizations (that come with 
 the application or that are defined by the application developer) for each application.  
-The default parameters and tuning options for Prophet are listed in the Table~\ref{tab:prophet_para}. For every cross validation, the application computes mean square error (MSE) as $\frac{1}{n}\sum_{i=1}^{n}(Y_i - \hat{Y_i})$, where $\hat{Y_i}$ is the ground truth, $Y_i$ is model prediction and n is the number of data points. Then the application returns the average MSE of all cross validation. Based on the model trained by default parameter setting, this average MSE metric is 0.284.
+The default parameters and tuning options for Prophet are listed in the Table~\ref{tab:prophet_para}. For every cross validation, the application computes mean square error (MSE) as $\frac{1}{n}\sum_{i=1}^{n}(Y_i - \hat{Y_i})$, where $\hat{Y_i}$ is the ground truth, $Y_i$ is model prediction and n is the number of data points. Then the application returns the average MSE across cross validations. 
+%Based on the model trained by default parameter setting, this average MSE metric is 0.284.
 
 
-Multi-Regression is a regression application 
-from an IoT project~\cite{iot-cpu} that was developed (and extended
+Multi-Regression is a regression application developed as part of
+an Internet-of-Things (IoT) project~\cite{iot-cpu} (and extended
 from linear regression described in the citation, 
-to multiple linear regression) by the authors.
+to multiple linear regression by the authors of this prior work).
 The application predicts outdoor temperature from the processor 
 temperature of single board computers (SBCs).  
 The technique uses multiple linear regression models computed from time
 series of processor temperature measurements,
-to predict outdoor microclimate temperatures without using a temperature sensor.
+to predict outdoor microclimate temperatures. % without using a temperature sensor.
 %(e.g. for use in 
 %precision agriculture applications such as irrigation control and frost protection).
 The training dataset consists of eight input time series (one per SBC, each containing 
@@ -109,41 +111,43 @@ and computes the mean square error between predicted and ground truth value pair
 XGBoost~\cite{ref:xgboost-web} is an open source framework for gradient boosting, which 
 performs both regression and classification. We consider it a regression application and
 a classification application in this evaluation.  
-The hyperparameters and their defaults that Seneca uses in this study are listed in Table~\ref{tab:xgboost_para}. A definition for each hyperparameter can be found at~\cite{ref:xgboostparams}.
+The hyperparameters and their defaults that Seneca uses in this study are listed in Table~\ref{tab:xgboost_para}. A definition for each hyperparameter can be found in~\cite{ref:xgboostparams}.
 %xgboostparams: https://xgboost.readthedocs.io/en/latest/python/python_api.html#module-xgboost.sklearn
+
 Support vector classification (SVC)~\cite{ref:svc} is a classification algorithm 
 based on support vector machine and implemented by libsvm~\cite{ref:libsvm} library.
-The hyperparameters and their defaults that Seneca uses for SVC in this study are listed in Table~\ref{tab:svc_para}. A definition for each hyperparameter can be found at~\cite{ref:svcparams}.
+The hyperparameters and their defaults that Seneca uses for SVC in this study are listed in Table~\ref{tab:svc_para}. A definition for each hyperparameter can be found in~\cite{ref:svcparams}.
 %xvcparams: https://scikit-learn.org/stable/modules/generated/sklearn.svm.SVC.html
+
 Neural network (NN)~\cite{ref:neural_network} is a machine learning framework that learns 
-and make decisions from patterns in an input dataset. For this application, 
+and makes decisions from patterns in an input dataset. For this application, 
 we use a feed-forward multi-layer perceptron model~\cite{ref:feedforward_nn} 
 for the classification task.
-The hyperparameters and their defaults that Seneca uses for Neural Network in this study are listed in Table~\ref{tab:nn_para}. A definition for each hyperparameter can be found at~\cite{ref:nnparams}.
+The hyperparameters and their defaults for NN are listed in Table~\ref{tab:nn_para}. 
+A definition for each hyperparameter can be found in~\cite{ref:nnparams}.
 %nn: https://scikit-learn.org/stable/modules/generated/sklearn.neural_network.MLPClassifier.html
 
-For these applications (XGBoost, SVC, and NN), we use a labeled
-dataset for training, testing, and evaluation from this
-project~\cite{iot-cpu}. The dataset contains measurements from individual
+For the classification applications (XGBoost, SVC, and NN), we use a labeled
+dataset for training, testing, and evaluation from an IoT 
+project~\cite{blind}. The dataset contains measurements from individual
 citrus fruit (e.g. oranges, mandarins, lemons, etc.) taken by a fruit sorting
 and grading device (using a large number of sensors).  The measurements (i.e.
 features) include size, shape, weight, color, diameter, flatness, among other
-characteristics, for each fruit.  The label indicates which field the fruit
-was harvested from.  The applications train a model on a subset of the
+characteristics, for each fruit.  
+The dataset has been filtered to remove correlated
+features (those with an absolute value of the Pearson correlation coefficient
+greater than 0.8). The dataset has also been balanced by down-sampling and the resulting 
+dataset contains 33926 rows (individual fruit) distributed evenly to 5 targets and each row has
+18 features.  The label indicates which field the individual fruit was harvested from.  
+The application trains a model on a subset (80\%) of the
 data.  They then use this model to predict the field
-from which each fruit originates. For this study we use the same random 80\%
-subset of the dataset as the training dataset.  We use the remaining 20\% as the
-testing dataset.
+from which each fruit originates (for the remaining 20\%). 
 
-These applications compute classification accuracy score
+The classification applications compute a classification accuracy score
 as $\frac{1}{n}\sum_{i=1}^{n}1(Y_i = \hat{Y_i})$, where $Y_i$ is the
 prediction class, $Y_i$ is the true class, $n$ is the number of samples, and 1(x)
 is the indicator function. XGBoost also computes MSE for its regression task
-on the same datasets. The dataset has been filtered to remove correlated
-features (those with an absolute value of the Pearson correlation coefficient
-greater than 0.8). The dataset has also been balanced by down-sampling and the resultant dataset contains
-33926 rows (individual fruit) distributed evenly to 5 targets and each row has
-18 features.
+on the same datasets. 
 
 %The dataset is from a Compac packline machine~\cite{ref:compac} that sorts and grades fruit using a large number of 
 %measurements (i.e. feature measurements including size, shape, weight, color, diameter, flatness, etc.).  The labels identify the field from which fruit was harvested.
