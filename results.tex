@@ -214,7 +214,9 @@ We do not consider the cost of dataset storage in our cost computations (it is v
 We also investigate Seneca's automatic memory optimization capabilities.  To
 do so we compare the execution performance and cost of the benchmarks using
 the maximum allocatable memory size to the performance and cost when run with
-Seneca's automatically determined memory size. Though memory size used reported by AWS CloudWatch fluctuates throughout the tuning process, we have verified the optimized allocated memory allows all hyperparameter settings run successfully.
+Seneca's automatically determined memory size. Though memory size used reported by AWS CloudWatch fluctuates throughout the tuning process, we 
+have verified that the optimized allocated memory allows all 
+hyperparameter settings complete successfully.
 
 % Note that this comparison assumes that the memory size used by each benchmark does not depend on hyperparameter settings. We have verified that this assumption holds for the benchmarks and datasets we consider and plan to consider applications for which hyperparameter settings require different maximum amounts of memory as part of future work.  
 

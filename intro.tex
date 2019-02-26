@@ -31,8 +31,11 @@ arbitrary computations in high level languages
 as stateless functions to cloud-hosted, serverless platforms.
 Functions are invoked (i.e. triggered)
 automatically by the cloud in response to updates to other cloud services
-(e.g. storage, queues, notification services, and API gateways, among others), which 
-the developer configures. Serverless functions
+(e.g. storage, queues, notification services, and API gateways, 
+among others), which 
+the developer configures. Serverless functions must execute in under
+a time bound (e.g. 15 minutes) and use less than a maximum memory size 
+(e.g. 3GB) or else the platform will terminate the function.
 communicate, persist, and access data only 
 through their inputs or via shared, storage services.  
 As a result, serverless applications are inherently elastic and can 
