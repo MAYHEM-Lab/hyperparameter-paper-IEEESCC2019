@@ -20,7 +20,8 @@ The configuration file
 specifies the range of values for each hyperparameter that the 
 application expects.  Seneca uses this configuration to construct
 the hyperparameter search space.  The dataset URL refers to a
-valid dataset stored in AWS S3.  
+valid dataset stored in the AWS Simple Storage 
+Service (S3)\footnote{\url{https://aws.amazon.com/s3/}}.
 
 Seneca automatically builds and deploys a AWS Lambda application
 from the machine learning application specified.
@@ -107,7 +108,7 @@ a user-defined payload.  From this run, Seneca obtains the memory
 used by function (reported by AWS Cloudwatch), 
 which it uses as its starting point.
 Seneca then defines two double-ended queues 
-(deque) of length N, to store 
+(\texttt{deque}) of length N, to store 
 allocated memory and compute charge data of different
 invocations. While the current 
 allocated memory is less than or equal to 3008 MB, 
@@ -117,10 +118,10 @@ calculates the compute charge for each invocation
 using current allocated memory and billed duration. 
 
 We employ two exit conditions.  The first is when the 
-compute charge monotonically increases across the deque. 
+compute charge monotonically increases across \texttt{deque}. 
 The second is when the increase in slope is greater than a threshold. 
 Once the optimizer finds that both conditions hold, 
-it pops the left-most value from deque and configures 
+it pops the left-most value from \texttt{deque} and configures 
 the function to use that value for allocated memory for all future invocations.
 After extensive experimentation, we find that 
 N=5 and a slope threshold of 1 work well in most cases.
@@ -132,18 +133,18 @@ argument to Seneca.
 \SetAlgoLined
 \KwData{Typical payload}
 \KwResult{Optimal allocated memory}
-Find memory used by payload as start point\;
-Define deques for allocated memory \& compute charge\;
+Find memory used by payload as starting point\;
+Define deque for allocated memory \& compute charge\;
  \While{allocated memory $\leq$ 3008 MB}{
   
-  \eIf{compute charge monotonically increase in deque \& slope $\geq$ 1}{
-   Popleft from deques\;
+  \eIf{compute charge monotonically increases in deque \& slope $\geq$ 1}{
+   Popleft from deque\;
    Configure allocated memory of function\; 
    Exit\;
    }{
    Increase allocated memory by 64 MB\;
    Probe lambda function\;
-   Append allocated memory and compute charge to deques\;
+   Append allocated memory and compute charge to deque\;
   }
  }
  \caption{Seneca Optimizer Heuristic}

@@ -1,54 +1,51 @@
-In this section, we overview related work. We discuss contributions that focus
-on serverless computing and machine learning model optimization. 
+We next overview related work. We discuss contributions that focus
+on serverless computing, automatic packaging, 
+and machine learning (ML) model optimization. 
 
 Multiple researchers have investigated the efficacy and overhead of the
 serverless programming model and 
-implementations~\cite{ref:jonas2017occupy,ref:onesteptwostep, ref:baldini2017,ref:lin2018tracking}.
-The authors in \cite{ref:onesteptwostep} evaluate the cost and performance of using
-serverless for data-intensive computing.  They identify some key weaknesses in AWS
-Lambda for this application domain including the inability to effectively train models.
-Our work show that it is possible for the subset of machine learning applications that we 
-consider, to train models in a cost effective ways.
+implementations~\cite{ref:jonas2017occupy,ref:onesteptwostep,ref:baldini2017,ref:lin2018tracking}.
+%The authors in \cite{ref:onesteptwostep} evaluate the cost and performance of using
+%serverless for data-intensive computing.  
+They identify some weaknesses in AWS
+Lambda for data-intensive computing, including the inability to 
+effectively train models.
+Our work shows that it is possible and cost effective to use
+AWS Lambda to train models for the subset of ML applications that we 
+consider.
 
-%\cite{ref:baldini2017} identifies multiple open research questions surrounding serverless,
-%including whether or not functions should be stateless. 
-PyWren~\cite{ref:jonas2017occupy} provides us a new perspective of stateless function being a natural fit for distributed computing models, because it 
-abstracts away cluster management overhead and is ideal for embarrassingly parallel jobs. 
-ExCamera~\cite{ref:encoding} presents a 
+PyWren~\cite{ref:jonas2017occupy} shows that stateless functions
+are a natural fit for distributed computing models. The technique
+abstracts away cluster management overhead and is ideal for 
+embarrassingly parallel jobs.  ExCamera~\cite{ref:encoding} presents a 
 framework for running general-purpose parallel tasks (encoding 4K video) 
-on a commercial serverless platform using multithreading. Another project from the same group, Cirrus~\cite{ref:jonas2019cloud}, tries to train ML model by using parameter server and serverless functions. An empirical comparison of resource utilization and performance isolation
+on a commercial serverless platform using multithreading. 
+Cirrus~\cite{ref:jonas2019cloud} attempts to train ML models 
+using a parameter server and serverless functions. 
+An empirical comparison of resource utilization and performance isolation
 is provided in~\cite{ref:peeking} for AWS Lambda, 
 Azure Functions, and Google Cloud Functions.
-%to discuss the resource utilization and performance isolation efficiency of 
-%three platforms. Besides efficacy and efficiency, there are challenges serverless architecture are facing in terms of 
-%application monitoring and distributed storage. GammaRay~\cite{ref:lin2018tracking} proposes a cloud service that extracts
-%causal dependencies across serverless functions and cloud services without programmer intervention. Such monitoring and 
-%debugging tool simplifies the development and maintenance of serverless applications. Pocket~\cite{ref:ephemeral} provides 
-%an elastic and economical distributed data store for severless analytic applications. We expect more contributions to toolchain 
-%and distributed storage of serverless in upcoming years.
 
-%please also discuss and cite these papers - you may need a second paragraph
-%http://www.cs.ucsb.edu/~ckrintz/papers/ic2e18.pdf
-%http://shivaram.org/publications/pywren-socc17.pdf
-%S. Fouladi, R. S. Wahby, B. Shacklett, K. V. Balasubramaniam, W. Zeng, R. Bhalerao, A. Sivaraman, G. Porter, and K., Winstein. “Encoding, Fast and Slow: Low-Latency Video Pro- cessing Using Thousands of Tiny Threads”. In: NSDI. Boston, MA: USENIX Association, 2017, pp. 363–376.
-%A. Klimovic, Y. Wang, C. Kozyrakis, P. Stuedi, J. Pfefferle, and A. Trivedi. “Understanding Ephemeral Storage for Serverless Analytics”. In: USENIX ATC. Boston, MA: USENIX Associa- tion, 2018, pp. 789–794.
-%. Wang, M. Li, Y. Zhang, T. Ristenpart, and M. Swift. “Peek- ing Behind the Curtains of Serverless Platforms”. In: USENIX ATC. Boston, MA: USENIX Association, 2018, pp. 133–146.
+The serverless framework~\cite{ref:serverless_framework} provides
+automated packaging and deployment for serverless functions across clouds. 
+The serverless framework uses CloudFormation\footnote{\url{https://aws.amazon.com/cloudformation/}} for deployment in AWS Lambda, which introduces additional cost. 
+The cloud infrastructure provisioning 
+framework Terraform\footnote{\url{https://www.terraform.io/}}
+also provides automated deployment of functions to serverless platforms
+(however, without replicating the Lambda runtim, introducing deployment errors).
+Seneca uses a local docker container to avoid this cost and overhead. 
+%In addition, AWS CodeDeploy~\cite{ref:codedeploy} serves as component in the continuous integration and delivery pipeline for serverless architectures, but it also introduces monetary cost overhead to do so.
 
-The serverless framework~\cite{ref:serverless_framework} contributes an 
-automated packaging and deployment toolset for serverless functions across clouds. 
-The serverless framework uses Cloudformation~\cite{ref:cloudformation} to package and deploy Lambda function, which introduces additional cost. Seneca uses local docker container to avoid this cost
-and overhead. The cloud infrastructure provisioning framework Terraform~\cite{ref:terraform} 
-also provides automated deployment of functions to serverless platforms, but it does not simulate the AWS Lambda runtime to create the deployment package (doing so on a non-Linux system will result in Lambda errors and failures at execution time). 
-In addition, AWS CodeDeploy~\cite{ref:codedeploy} serves as component in the continuous integration and delivery pipeline for serverless architectures, but it also introduces monetary cost overhead
-to do so.
-
-Automated hyperparameter optimization has been researched and developed 
-in numerous projects. Google Vizier~\cite{ref:vizier} provides a service for 
+Automated hyperparameter optimization is the focus of
+many projects. Google Vizier~\cite{ref:vizier} provides a service for 
 black-box optimization. Optunity~\cite{ref:claesen2014hyperparameter} 
-proposes a Python library for hyperparameter tuning. 
-This can be considered as precursory work of Hyperopt~\cite{ref:hyperopt}, 
-which is a more advanced Python library for serial and parallel hyperparameter 
-optimization over awkward search space. Hyperas~\cite{ref:hyperas} adds another 
-abstraction layer to hyperopt and facilitates the hyperparameter tuning for 
-Keras~\cite{ref:keras}. However, no extant work of which we are aware leverages
-serverless to perform hyperparameter tuning in parallel. 
+and Hyperopt\footnote{\url{http://hyperopt.github.io/hyperopt/}}
+provide a Python library for hyperparameter tuning. 
+%This can be considered as precursory work of Hyperopt~\cite{ref:hyperopt}, 
+%which is a more advanced Python library for serial and parallel hyperparameter 
+%optimization over awkward search space. 
+Hyperas\footnote{\url{http://maxpumperla.com/hyperas/}} adds another 
+abstraction layer to hyperopt to facilitate hyperparameter tuning for 
+Keras~\footnote{\url{https://keras.io/}}. However, no extant work of which we are aware leverages
+serverless to perform hyperparameter tuning and memory optimization in parallel 
+for ML applications.
