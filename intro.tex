@@ -5,7 +5,7 @@ the underlying physical resources) on a pay-per-use basis
 in exchange for availability guarantees specified via service level
 agreements (SLAs). Uniquely, cloud systems can be configured 
 to add and remove (i.e. auto-scale) resources and services
-automatically, based on the ``elastic'' resource requirements and service needs 
+automatically, based on the dynamic resource requirements and service needs 
 of executing applications.
 
 To date however, clouds are used more for
@@ -16,7 +16,7 @@ distributed systems for application use,
 and to leverage the auto-scaling that
 clouds offer. To address this challenge, cloud providers 
 have started to offer programming and execution environments
-that preclude the need for server configuration,
+that obviate the need for server configuration,
 under the \textit{serverless} moniker~\cite{ref:jonas2017occupy,ref:onesteptwostep,ref:peeking}.  
 Serverless platforms automatically configure, manage, and scale applications
 to significantly simplify cloud use.
@@ -75,7 +75,8 @@ and memory use for five machine learning applications and datasets. We
 find that Seneca is fast, inexpensive, and effective for model 
 construction and comparison. Seneca is also able to identify
 automatically the
-best memory configuration for each application, further lowering its cost
+best memory configuration for each application, further lowering its
+cost
 by 10-35\%. Relative to execution in AWS EC2, Seneca enables average speedups of 294x for each additional dollar 
 spent for the applications and datasets we consider.
 We intend to make Seneca, its applications, and their datasets publicly available

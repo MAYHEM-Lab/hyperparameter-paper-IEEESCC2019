@@ -28,7 +28,7 @@ The cloud infrastructure provisioning
 framework Terraform~\cite{ref:terraform}
 also provides automated deployment of functions to serverless platforms.
 %(however, without replicating the Lambda runtime, introducing deployment errors).
-Seneca uses a local docker container to avoid  cost and overhead (vs these related
+Seneca uses a local Docker container to avoid  cost and overhead (vs these related
 works), which guarantees execution compatibility for AWS Lambda. 
 %In addition, AWS CodeDeploy~\cite{ref:codedeploy} serves as component in the continuous integration and delivery pipeline for serverless architectures, but it also introduces monetary cost overhead to do so.
 
@@ -42,7 +42,6 @@ provide a Python library for hyperparameter tuning.
 %optimization over awkward search space. 
 Hyperas~\cite{ref:hyperas} adds another 
 abstraction layer to hyperopt to facilitate hyperparameter tuning for 
-Keras~\cite{ref:keras}. However, no extant work of which 
-we are aware leverages
-serverless to perform hyperparameter tuning and memory optimization in parallel 
-for ML applications.
+Keras~\cite{ref:keras}. However, we are not aware of any work that
+leverages serverless to perform hyperparameter tuning and memory
+optimization in parallel for ML applications.

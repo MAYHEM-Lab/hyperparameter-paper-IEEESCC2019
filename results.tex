@@ -73,10 +73,9 @@ The dataset exhibits both seasonality and a holiday effect (e.g. around
 super bowl games).  We use the first 6 years as the training set 
 and the last 2 years as the testing set.  We use a cross-validation 
 horizon (sliding window) of 1-year, and a period (sliding pace) 
-of 180 days.  As such, Seneca performs three cross-validations for 2-year test range.
+of 180 days.  As such, Seneca performs three cross-validations for a 2-year test range.
 
-Prophet expects multiple hyperparameters.
-\textit{growth} specifies linear or logistic trend model growth and \textit{prior scale} indicates the strength of the sparse prior probability. There are three prior scale hyperparameters for change point, holidays, and seasonality. Since Prophet uses a Fourier sum to estimate seasonality, the \textit{fourier order} is the number of terms in the partial Fourier sum. \textit{Seasonality mode} indicates that the effect of seasonality is either multiplicative or additive. Finally, the width of uncertainty intervals is set using \textit{interval width}.
+Prophet expects multiple hyperparameters: \textit{growth} specifies linear or logistic trend model growth and \textit{prior scale} indicates the strength of the sparse prior probability. There are three prior scale hyperparameters for change point, holidays, and seasonality. Since Prophet uses a Fourier sum to estimate seasonality, the \textit{fourier order} is the number of terms in the partial Fourier sum. \textit{Seasonality mode} indicates that the effect of seasonality is either multiplicative or additive. Finally, the width of uncertainty intervals is set using \textit{interval width}.
 
 Each application has default hyperparameter settings (i.e. default values or those recommended by the application maintainer). The hyperparameters, their default and optional values that we consider for Prophet are listed in the Table \ref{tab:prophet_para}.
 
@@ -92,7 +91,7 @@ series (one per SBC, each containing
 5-minute measurements) from Apr. 5th to Dec. 10th, 2018.
 
 Hyperparameter configuration for Multi-Regression is a subset of input SBC time series.
-Seneca considers all \texttt{$2^N - 1$} potential subsets (for $N$ input time series).
+Seneca considers all \texttt{$2^N - 1$} non-emtpy potential subsets (for $N$ input time series).
 For this application, the default parameterization is the 
 full set of input time series (8 in this case).
 The test dataset is a time 
@@ -136,7 +135,7 @@ dataset contains 33926 rows (individual fruit)
 distributed evenly across 5 targets. Each row has
 18 features.  The label identifies the field from which the individual fruit was harvested.
 
-The applications train a model on a random subset (80\%) of the data. Each then uses this model to predict the field from which each fruit originates for the remaining 20\%. To study the impact of random data split, we consider multiple 80\%/20\% splits in our evaluation.
+The applications train a model on a random subset (80\%) of the data. Each then uses this model to predict the field from which each fruit originates for the remaining 20\%. To study the impact of random data split, we consider multiple (30 in our experiments) 80\%/20\% splits in our evaluation.
 \subsection{Empirical Methodology}
 
 To evaluate Seneca, we measure model output quality, execution time, memory use, and monetary cost.  For output quality (prediction accuracy) our metrics are mean squared error (MSE) for regression and percentage accuracy for classification as described above. We score model prediction accuracy and not explanatory power ($R^2$) to avoid overfitting. 
@@ -153,7 +152,7 @@ We compute monetary cost using the AWS Lambda pricing model~\cite{ref:pricing}.
 Each function downloads the training/testing dataset 
 of the application from AWS S3 upon function invocation. 
 We do not consider the cost of dataset storage 
-in our cost computations (it is very small).
+in our cost computations (it is very small, under X cents).
 %\footnote{\url{https://aws.amazon.com/cloudwatch/}}
 %\footnote{\url{https://aws.amazon.com/lambda/pricing/}}
 We also evaluate Seneca's automatic memory optimization capabilities.  To
@@ -201,7 +200,7 @@ The last three rows show the MSE for the default, worst, and best performing (Se
 hyperparameter configuation (lower is better).
 Seneca reduces MSE by 22.56\%, 15.94\%, and 44.88\%, for Prophet, Multi-Regression, and XGBoost,
 respectively, for the datasets and training methodologies that we consider.
-Verses the worst case, Seneca reduces MSE by 82.62\%, 78.01\%, and 99.28\%, respectively.
+Compared to the worst case, Seneca reduces MSE by 82.62\%, 78.01\%, and 99.28\%, respectively.
 
 Figure~\ref{fig:box_plot_mse} shows the MSE box plot for the hyperparameter search space for these applications (lower is better). 
 The central rectangle covers the interquartile range (IQR),
@@ -290,7 +289,7 @@ in each case.
 To investigate the potential impact of Seneca's 80/20 percent data split for the classification
 applications, we next evaluate the quality of the output generated from 
 each when we consider different 80/20 random splits.
-To enable this, we run Seneca 30 times to obtain execution time, memory use, 
+For that purpose, we run Seneca 30 times to obtain execution time, memory use, 
 and best accuracy score. We report the
 mean and standard deviation (in parentheses) 
 for execution time and memory use across runs,
