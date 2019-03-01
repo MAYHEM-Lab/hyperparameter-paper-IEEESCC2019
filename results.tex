@@ -91,7 +91,7 @@ series (one per SBC, each containing
 5-minute measurements) from Apr. 5th to Dec. 10th, 2018.
 
 Hyperparameter configuration for Multi-Regression is a subset of input SBC time series.
-Seneca considers all \texttt{$2^N - 1$} non-emtpy potential subsets (for $N$ input time series).
+Seneca considers all \texttt{$2^N - 1$} non-empty potential subsets (for $N$ input time series).
 For this application, the default parameterization is the 
 full set of input time series (8 in this case).
 The test dataset is a time 
@@ -157,7 +157,7 @@ We compute monetary cost using the AWS Lambda pricing model~\cite{ref:pricing}.
 Each function downloads the training/testing dataset 
 of the application from AWS S3 upon function invocation. 
 We do not consider the cost of dataset storage 
-in our cost computations, because it is very small. For XGBoost that makes most S3 requests among others, the cost is under 2.5 cents for storage and request combined in a month.
+in our cost computations, because it is very small. For XGBoost that makes most S3 requests among others, the cost is less than 2.5 cents for storage and request combined in a month.
 %\footnote{\url{https://aws.amazon.com/cloudwatch/}}
 %\footnote{\url{https://aws.amazon.com/lambda/pricing/}}
 We also evaluate Seneca's automatic memory optimization capabilities.  To
@@ -166,7 +166,7 @@ the maximum allocatable memory size to the performance and cost when run with
 Seneca's automatically determined memory size. Even though \texttt{maximum memory used} reported by AWS CloudWatch can fluctuate, we 
 have verified that the optimized allocated memory is sufficient for all 
 hyperparameter configurations to complete successfully.  We have also verified
-that the memory requirements across hyperparemeter settings do not vary 
+that the memory requirements across hyperparameter settings do not vary 
 significantly. We plan to consider applications for which hyperparameter settings require
 different maximum memory sizes as part of future work.
 
@@ -355,7 +355,7 @@ since the functions must operate under additional memory
 constraints (versus using the maximum allocated memory).  
 In addition, this cost fluctuates depending on the quality of the Lambda
 execution environment (number of CPUs, Linux container overhead, 
-multitenency, etc.).  We omit this data due to space constraints but analyze it here.
+multitenancy, etc.).  We omit this data due to space constraints but analyze it here.
 The average absolute difference in cost
 across the five applications (30 runs) is \$0.05. %I use only split 1 for all 5
 %numbers are below

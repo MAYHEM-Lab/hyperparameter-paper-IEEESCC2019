@@ -149,7 +149,7 @@ Based on the configuration file, Seneca creates and enqueues a list of
 payloads (function arguments) for each combination of hyperparameter
 values.  The Seneca celery workers invoke the application's Lambda
 function by each payload for model construction. Upon function
-termination, the worker records a score for the hyperparemeter
+termination, the worker records a score for the hyperparameter
 configuration in the database.  When the queue is drained and all
 workers have completed, Seneca extracts and reports the best score,
 configuration, and model from the database. Users can then use the
