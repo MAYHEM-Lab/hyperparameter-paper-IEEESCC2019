@@ -34,7 +34,7 @@ executed, will download the dataset and split it into a training and
 testing set, and construct, test, and evaluate a model using the
 application and a set of hyperparameter values passed in by Seneca as
 arguments.  Users can specify the train/test split ratio that should
-be used by Seneca; the default is 80\%/20\%.  The function returns a
+be used by Seneca; the default is 80\%/20\% for classification tasks.  The function returns a
 testing score.  Upon completion of this process, the container deploys
 the function to AWS Lambda using the AWS Command Line
 Interface~\cite{ref:awscli}

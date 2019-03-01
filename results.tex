@@ -135,7 +135,7 @@ dataset contains 33926 rows (individual fruit)
 distributed evenly across 5 targets. Each row has
 18 features.  The label identifies the field from which the individual fruit was harvested.
 
-The applications train a model on a random subset (80\%) of the data. Each then uses this model to predict the field from which each fruit originates for the remaining 20\%. To study the impact of random data split, we consider multiple (30 in our experiments) 80\%/20\% splits in our evaluation.
+The applications train a model on a random subset (80\%) of the data. Each then uses this model to predict the field from which each fruit originates for the remaining 20\%. To study the impact of random data split, we consider multiple 80\%/20\% splits in our evaluation.
 \subsection{Empirical Methodology}
 
 To evaluate Seneca, we measure model output quality, execution time, memory use, and monetary cost.  For output quality (prediction accuracy) our metrics are mean squared error (MSE) for regression and percentage accuracy for classification as described above. We score model prediction accuracy and not explanatory power ($R^2$) to avoid overfitting. 
@@ -152,7 +152,7 @@ We compute monetary cost using the AWS Lambda pricing model~\cite{ref:pricing}.
 Each function downloads the training/testing dataset 
 of the application from AWS S3 upon function invocation. 
 We do not consider the cost of dataset storage 
-in our cost computations (it is very small, under X cents).
+in our cost computations, because it is very small. For XGBoost that makes most S3 requests among others, the cost is under 2.5 cents for storage and request combined in a month.
 %\footnote{\url{https://aws.amazon.com/cloudwatch/}}
 %\footnote{\url{https://aws.amazon.com/lambda/pricing/}}
 We also evaluate Seneca's automatic memory optimization capabilities.  To
