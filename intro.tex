@@ -11,7 +11,7 @@ of executing applications.
 To date however, clouds are used more for
 enterprise services (object stores, databases, application servers, etc.)
 than for elastic applications.
-The reason for this is that it is challenging to configure complex
+The reason is that it is challenging to configure complex
 distributed systems for application use, 
 and to leverage the auto-scaling that
 clouds offer. To address this challenge, cloud providers 
@@ -20,37 +20,25 @@ that preclude the need for server configuration,
 under the \textit{serverless} moniker~\cite{ref:jonas2017occupy,ref:onesteptwostep,ref:peeking}.  
 Serverless platforms automatically configure, manage, and scale applications
 to significantly simplify cloud use.
-%and broaden participation (by less expert
-%users) in the use of cloud systems.
-%xxx: http://shivaram.org/publications/pywren-socc17.pdf
-%yyy: http://cidrdb.org/cidr2019/papers/p119-hellerstein-cidr19.pdf
-%zzz: L. Wang, M. Li, Y. Zhang, T. Ristenpart, and M. Swift. “Peek- ing Behind the Curtains of Serverless Platforms”. In: USENIX ATC. Boston, MA: USENIX Association, 2018
 
-Using the serverless model, application developers upload 
-arbitrary computations in high level languages
-as stateless functions to cloud-hosted, serverless platforms.
-Functions are invoked (i.e. triggered)
-automatically by the cloud in response to updates to other cloud services
-(e.g. storage, queues, notification services, and API gateways, 
-among others), which 
-the developer configures. Serverless functions must execute in under
-a time bound (e.g. 15 minutes) and use less than a maximum memory size 
-(e.g. 3GB) or else the platform will terminate the function.
+Using the serverless model, application developers upload arbitrary computations in high level languages as stateless functions to cloud-hosted, serverless platforms, where functions are triggered automatically by the cloud in response to updates from other cloud services (e.g. storage, queues, notification services, and API gateways, 
+among others). Serverless functions must execute under a time bound (e.g. 15 minutes) and an allocated memory size 
+(e.g. 3GB) or else the platform will terminate the function. They
 communicate, persist, and access data only 
-through their inputs or via shared, storage services.  
-As a result, serverless applications are inherently elastic and can 
+through their inputs or via shared storage services. As a result, serverless applications are inherently elastic and can 
 implement highly concurrent and parallel tasks.
 In public clouds, users pay a small fee for the resources their 
 functions use during execution, resulting in very low cost cloud use.
 Although now available from all public cloud providers and as open 
 source for private cloud systems, 
-Amazon Web Services (AWS) Lambda\footnote{\url{https://docs.aws.amazon.com/lambda/latest/dg/lambda-dg.pdf}} %~\cite{ref:awslambdadg} 
+Amazon Web Services (AWS) Lambda~\cite{ref:awslambdadg}
+%\footnote{\url{https://docs.aws.amazon.com/lambda/latest/dg/lambda-dg.pdf}}
 was the first and is the most widely used
 serverless public cloud platform.
 %awslambda: https://docs.aws.amazon.com/lambda/latest/dg/lambda-dg.pdf
 
 In this work, we investigate the efficacy of using AWS Lambda
-for tuning machine learning applications.
+for tuning machine learning applications in parallel.
 To date, Lambda is not widely used for training and evaluating
 machine learning models because of a concern that 
 doing so will result in high overhead (i.e. be costly) because
@@ -80,26 +68,17 @@ of hyperparameters and returns to the user
 the set of parameters (or the model itself) that produces
 the best cross-validation score.
 Users can employ this model for other datasets
-(with Seneca if desired) without retraining the model to amortize the cost
-of Seneca further.
+(with Seneca if desired) without retraining the model to amortize the cost of Seneca further.
 
 We deploy Seneca on AWS Lambda and evaluate its tuning performance, cost,
-and memory use for six machine learning applications and datasets. We 
+and memory use for five machine learning applications and datasets. We 
 find that Seneca is fast, inexpensive, and effective for model 
 construction and comparison. Seneca is also able to identify
 automatically the
 best memory configuration for each application, further lowering its cost
-by 10-30\%.
+by 10-35\%. Relative to execution in AWS EC2, Seneca enables average speedups of 294x for each additional dollar 
+spent for the applications and datasets we consider.
 We intend to make Seneca, its applications, and their datasets publicly available
-when/if this paper is accepted for publication.  In the sections
-that follow, we overview our design and implementation of Seneca and then
+when/if this paper is accepted for publication.  
+We next overview our design and implementation of Seneca and then
 present our empirical methodology and results.
-
-
-\ignore{
-Recent work~\cite{ref:onesteptwostep} argues however that AWS Lambda
-
-Serverless~\cite{ref:serverless} computing is a rising function-based (also known as Functions-as-a-Service~\cite{ref:faas}) programming and deployment paradigm on top of cloud infrastructure, in which programmers manifest business logic without concerning provisioning servers by modular functions that are triggered by incoming events and return computation results in serialized format like XML or JSON. Such events include HTTP requests from clients, possibly proxied by API Gateway, or communications between cloud services based on heterogeneous protocols. Depending on the supported runtimes from cloud vendors, functions could be written in various high-level languages (i.e. NodeJS, Python, Java, etc.) and take advantage of serverless SDK to interact with other cloud services. Until recently, the leading serverless platform, Amazon Web Services(AWS) Lambda, expands language support by custom runtime~\cite{ref:customruntime} where software engineers can implement functions by any programming languages. 
-
-Primarily, there are four evolutionary advantages that serverless architecture brings to cloud computing. First and foremost, it raises the abstraction layer from virtual machines to function containers~\cite{ref:container} that abstracts away the responsibilities of infrastructure management from DevOps~\cite{ref:devops} personnel to the cloud provider, in terms of scaling, patching, provisioning, error-handling and terminating underlying bare metal servers or clusters. Such shift allows more agile development life cycle and more product-oriented programming iteration. Secondly, the event-driven and paralleled container runtime of serverless function provides more fine-grained computational resource isolation and usage. Hence, serverless architecture makes cloud operation more secure and energy-efficient compared to traditional virtual machine instance runtime. Thirdly, serverless architecture decomposes monolithic application code base even further from microservices~\cite{ref:microservices} into granular functions, which are easier to be created, maintained and refactored by team or individual programmer. Furthermore, Function-as-a-Service applications could be autoscaled independently with respect to modular functions depending on the volume of request. This capability also contributes to the energy efficiency and eliminating throttling bottlenecks. Lastly, serverless computing provides "Pay-per-execution" pricing model~\cite{ref:pricing}. In a real world case study~\cite{ref:serverless_econ}, the server operational cost on serverless platform could be reduced dramatically, given a relatively lower amount of Transactions Per Second (TPS). According to these merits, the stateless, event-driven and embarrassingly parallel tasks are potentially cost-effective with lower latency by running on serverless framework. 
-}

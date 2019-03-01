@@ -2,39 +2,35 @@
 \begin{table}[t]
 \centering
 \input{tables/application-tab}
-\caption{Machine learning applications used as benchmarks
+\caption{Machine learning applications used 
 to evaluate Seneca. 
 %paper submission is blind (so such references must be omitted so as not to reveal our identities):
 %Code base is available at project repository~\cite{ref:seneca}.
 \label{tab:bmarks}}
-%\vspace{-0.2in}
+\vspace{-0.1in}
 \end{table}
 
 \begin{table}[t]
 \centering
 \input{tables/hparams-prophet-tab}
-\caption{The hyperparameters that Seneca considers for Prophet. 
-The default value and tuning options are listed. 
+\caption{Hyperparameters Seneca considers for \textbf{Prophet}. 
 \label{tab:prophet_para}}
-%\vspace{-0.2in}
+%\vspace{-0.1in}
 \end{table}
 
 \begin{table}[t]
 \centering
-%\scriptsize
 \input{tables/hparams-xgboost-tab}
-\caption{The hyperparameters that Seneca considers for XGBoost. 
-The default value and tuning options are listed. 
+\caption{Hyperparameters Seneca considers for \textbf{XGBoost}. 
 \label{tab:xgboost_para}}
-%\vspace{-0.2in}
+\vspace{-0.2in}
 \end{table}
 
 \begin{table}[t]
 \centering
 %\scriptsize
 \input{tables/hparams-svc-tab}
-\caption{The hyperparameters that Seneca considers for SVC. 
-The default value and tuning options are listed. 
+\caption{Hyperparameters Seneca considers for \textbf{SVC}. 
 \label{tab:svc_para}}
 %\vspace{-0.2in}
 \end{table}
@@ -43,397 +39,269 @@ The default value and tuning options are listed.
 \centering
 %\scriptsize
 \input{tables/hparams-nn-tab}
-\caption{The hyperparameters that Seneca considers for NN.
-The default value and tuning options are listed. 
+\caption{Hyperparameters Seneca considers for \textbf{NN}.
 \label{tab:nn_para}}
 \vspace{-0.2in}
 \end{table}
 
-In this section,
-we evaluate Seneca in terms of performance, monetary cost, 
-and hyperparameter tuning execution time, 
-for different machine learning applications.
-We first overview these applications and our empirical methodology. 
-We then present our experimental results. 
+In this section, we empirically evaluate Seneca in terms of machine learning (ML) 
+model output quality, performance, and cost.
+We first overview the ML applications 
+that we consider and our experimental methodology. 
+We then present our results. 
 
-\subsection{Benchmark Applications and Training/Testing  Datasets}
-The machine learning applications that we use to evaluate Seneca 
-are shown in Table~\ref{tab:bmarks}, each with 
-a brief description.  Prophet, Multi-Regression, and XGBoost are regression
-applications; XGBoost, SVC, and NN are classification applications (XGBoost 
+\subsection{Benchmark Applications and Training/Testing Datasets}
+The ML applications that we use to evaluate Seneca 
+are described in Table~\ref{tab:bmarks}.
+Prophet, Multi-Regression, and XGBoost are regression
+applications; 
+XGBoost, SVC, and NN are classification applications (XGBoost 
 implements both regression and classification tasks).
+The regression applications compute the mean square error (MSE) 
+as $\frac{1}{n}\sum_{i=1}^{n}(Y_i - \hat{Y_i})$, where $\hat{Y_i}$ is the ground truth, 
+$Y_i$ is model prediction and n is the number of data points. The applications
+return the average MSE across cross validations.
+The classification applications compute and return a classification accuracy 
+percentage, which is calculated
+as $\frac{1}{n}\sum_{i=1}^{n}1(Y_i = \hat{Y_i})$, where $Y_i$ is the
+prediction class, $\hat{Y_i}$ is the true class, $n$ is the number of samples, and 1(x) is the indicator function. 
 
-Prophet~\cite{ref:prophet} is a time series analysis library built and maintained by Facebook and the open-source community. The input dataset is a time series of view counts
-%logorithm
-of Peyton Manning's Wikipedia page from Dec. 10th, 2007 to Jan. 20th, 2016. 
+Prophet~\cite{ref:prophet} is an open source time series analysis library developed
+by Facebook.  The input dataset we consider is a time series of view counts
+of Peyton Manning's Wikipedia page (Dec. 2007--Jan. 2016).
 The dataset exhibits both seasonality and a holiday effect (e.g. around 
-super bowl games). 
-We use the first 6 years as the training set and the last 2 years as the testing set.  We use a cross-validation horizon (sliding window) of 1-year, 
-and a period (sliding pace) 
-of 180 days.  As such, Seneca performs three cross-validations for each 2-year test range.
+super bowl games).  We use the first 6 years as the training set 
+and the last 2 years as the testing set.  We use a cross-validation 
+horizon (sliding window) of 1-year, and a period (sliding pace) 
+of 180 days.  As such, Seneca performs three cross-validations for 2-year test range.
 
-Prophet expects multiple hyperparameters: \textit{growth} specifies linear or logistic trend model growth; \textit{prior scale} indicates the strength of the 
-sparse prior probability~\cite{ref:sparse_prior}. 
-There are three prior scale hyperparameters for change point, holidays, and seasonality. 
-Since Prophet uses a Fourier sum to estimate seasonality, 
-the \textit{fourier order} is the number of terms in the partial Fourier 
-sum. \textit{Seasonality mode} indicates that the effect of seasonality is either 
-multiplicative or additive. Finally, the width of uncertainty intervals 
-is set using \textit{interval width}.
+Prophet expects multiple hyperparameters.
+\textit{growth} specifies linear or logistic trend model growth and \textit{prior scale} indicates the strength of the sparse prior probability. There are three prior scale hyperparameters for change point, holidays, and seasonality. Since Prophet uses a Fourier sum to estimate seasonality, the \textit{fourier order} is the number of terms in the partial Fourier sum. \textit{Seasonality mode} indicates that the effect of seasonality is either multiplicative or additive. Finally, the width of uncertainty intervals is set using \textit{interval width}.
 
-In the results that follow, we evaluate \textit{default} parameterizations (that come with 
-the application or that are defined by the application developer) for each application.  
-The default parameters and tuning options for Prophet are listed in the Table~\ref{tab:prophet_para}. For every cross validation, the application computes mean square error (MSE) as $\frac{1}{n}\sum_{i=1}^{n}(Y_i - \hat{Y_i})$, where $\hat{Y_i}$ is the ground truth, $Y_i$ is model prediction and n is the number of data points. Then the application returns the average MSE across cross validations. 
-%Based on the model trained by default parameter setting, this average MSE metric is 0.284.
+Each application has default hyperparameter settings (i.e. default values or those recommended by the application maintainer). The hyperparameters, their default and optional values that we consider for Prophet are listed in the Table \ref{tab:prophet_para}.
 
-
-Multi-Regression is a regression application developed as part of
+Multi-Regression is a regression application developed by others as part of
 an Internet-of-Things (IoT) project~\cite{iot-cpu} (which has been
 extended from linear regression described in the citation 
 to multiple linear regression by the authors of this prior work).
-The application predicts outdoor temperature from the processor 
+The application uses multiple linear regression models
+to predict outdoor temperature from the processor 
 temperature of single board computers (SBCs).  
-The technique uses multiple linear regression models computed from time
-series of processor temperature measurements,
-to predict outdoor microclimate temperatures. 
 The training dataset consists of eight input time 
 series (one per SBC, each containing 
-5-minute measurements) from April 5th, 2018 to Dec. 10th, 2018.
+5-minute measurements) from Apr. 5th to Dec. 10th, 2018.
 
-A hyperparameter configuration for this application is 
-a subset of input SBC time series.
+Hyperparameter configuration for Multi-Regression is a subset of input SBC time series.
 Seneca considers all \texttt{$2^N - 1$} potential subsets (for $N$ input time series).
-For this application,
-we assume the default parameterization is the 
+For this application, the default parameterization is the 
 full set of input time series (8 in this case).
-The test dataset for this application is a time 
+The test dataset is a time 
 series of the outdoor temperature (ground truth) 
-over the same period.  The application makes 
+over the same period.  
+The application makes 
 predictions for each of these outdoor temperatures
 using the regression coefficients constructed from the training set
-and computes and returns the MSE between predicted 
-and ground truth value pairs.
+for each new value in the test set.
+%and computes and returns the MSE between predicted 
+%and ground truth value pairs.
 
-
+XGBoost~\cite{ref:xgboost-web}, SVC~\cite{ref:svc}, and NN~\cite{ref:neural_network} 
+are the classification applications that we consider.
 XGBoost~\cite{ref:xgboost-web} is an open source 
 framework for gradient boosting, which 
 performs both regression and classification. 
-The hyperparameters and the default values that Seneca uses 
-in this study are listed in Table~\ref{tab:xgboost_para}. 
-A definition for each hyperparameter can be found in~\cite{ref:xgboostparams}.
-%xgboostparams: https://xgboost.readthedocs.io/en/latest/python/python_api.html#module-xgboost.sklearn
+The hyperparameters and their default values 
+are listed in Table~\ref{tab:xgboost_para}, their definitions can be
+found in~\cite{ref:xgboostparams}. SVC uses support vector machines to implement classification as part of the libsvm~\cite{ref:libsvm} library.
+The hyperparameters and their defaults that Seneca uses for SVC in this study are listed in Table~\ref{tab:svc_para} with definitions
+in~\cite{ref:svcparams}. NN is a machine 
+learning application leveraging neural network to identify patterns from an input dataset. 
+Here we implement a feed-forward multi-layer perceptron model~\cite{ref:feedforward_nn} 
+for classification. The hyperparameters and their defaults for NN are listed in Table~\ref{tab:nn_para} with definitions
+in~\cite{ref:nnparams}. 
+%\footnote{\url{https://scikit-learn.org/stable/modules/generated/sklearn.neural_network.MLPClassifier.html}}.
+%\footnote{\url{https://xgboost.readthedocs.io/en/latest/python/python_api.html\#module-xgboost.sklearn}}
+%\footnote{\url{https://scikit-learn.org/stable/modules/generated/sklearn.svm.SVC.html}}
 
-Support vector classification (SVC)~\cite{ref:svc} 
-is an implementation of a classification algorithm 
-that is based on support vector machines that is part of the
-libsvm~\cite{ref:libsvm} library.
-The hyperparameters and their defaults that Seneca uses for SVC in this study are listed in Table~\ref{tab:svc_para}. A definition for each hyperparameter can be found in
-%svcparams: https://scikit-learn.org/stable/modules/generated/sklearn.svm.SVC.html
-\footnote{\url{https://scikit-learn.org/stable/modules/generated/sklearn.svm.SVC.html}}.
-
-Neural network (NN)~\cite{ref:neural_network} is a machine 
-learning framework that learns 
-and makes decisions from patterns in an input dataset. For this application, 
-we use a feed-forward multi-layer perceptron model~\cite{ref:feedforward_nn} 
-for the classification task.
-The hyperparameters and their defaults for NN 
-are listed in Table~\ref{tab:nn_para}. 
-A definition for each hyperparameter can be found in~\cite{ref:nnparams}.
-%nn: https://scikit-learn.org/stable/modules/generated/sklearn.neural_network.MLPClassifier.html
-
-For the classification applications (XGBoost, SVC, and NN), we use a labeled
-dataset for training, testing, and evaluation from an IoT 
-project~\cite{blind}. The dataset contains measurements from individual
+For these classification applications, we use a labeled
+dataset for training, testing, and evaluation from another IoT 
+project~\cite{blind}. The dataset contains measurements of individual
 citrus fruit (e.g. oranges, mandarins, lemons, etc.) taken by a fruit sorting
-and grading device (using a large number of sensors).  The measurements (i.e.
-features) include size, shape, weight, color, diameter, flatness, among other
-characteristics, for each fruit.  
+and grading device using a large number of sensors. The measurements (i.e. features) include size, shape, weight, color, diameter, flatness, among other characteristics, for each fruit.  
 The dataset has been filtered to remove correlated
 features (those with an absolute value of the Pearson correlation coefficient
-greater than 0.8). The dataset has also been balanced by 
+greater than 0.8). The dataset has been balanced by 
 down-sampling and the resulting 
 dataset contains 33926 rows (individual fruit) 
 distributed evenly across 5 targets. Each row has
-18 features.  The label identifies the field from which the 
-individual fruit was harvested.
+18 features.  The label identifies the field from which the individual fruit was harvested.
 
-The applications train a model on a subset (80\%) of the
-data.  Each then uses this model to predict the field
-from which each fruit originates (for the remaining 20\%). 
-The applications compute a classification accuracy score
-as $\frac{1}{n}\sum_{i=1}^{n}1(Y_i = \hat{Y_i})$, where $Y_i$ is the
-prediction class, $Y_i$ is the true class, 
-$n$ is the number of samples, and 1(x)
-is the indicator function. The applications return the accuracy percentage
-upon completion. As mentioned above, in addition to returning
-classification accuracy for its classification task, XGBoost also returns 
-MSE for its regression task.
-
-%The dataset is from a Compac packline machine~\cite{ref:compac} that sorts and grades fruit using a large number of 
-%measurements (i.e. feature measurements including size, shape, weight, color, diameter, flatness, etc.).  The labels identify the field from which fruit was harvested.
-%The dataset is filtered to remove correlated features (those with an absolute value of the Pearson correlation 
-%coefficient greater than 0.8).  
-
-%Seneca downloads the dataset from AWS S3 for each function invocation.
-%It then randomly indexes the dataset and splits it into two.  
-
-% For these applications (XGBoost, SVC, and NN), we consider three
-% split scenarios for training and testing: 80\%-20\%, 20\%-80\% and
-% 0.1\%-99.9\%. As the proportion of training data decreases, the performance of
-% classifier degrades accordingly. However we note that using the optimized
-% hyperparameters generated by Seneca, these classifiers are able to achieve
-% accuracy levels similar to those generated from the default parameters, but
-% with significantly less training data.
-
-% and we argue that Seneca is able to eke out
-%improvement even with very limited training data.
-
-%\textcolor{blue}{list them here once we finish the additional results} 
-%This setup also means that each Seneca function
-%considers a different training and testing set during hyperparameter tuning. 
-
-%todo in the future -- for a complete tuning, use the same testing and training sets
-%run this multiple times (for the same test/train datasets) and report the average and stdev in the latency (and memory?) results.
-%todo in the future -- repeat the above using different test/train datasets, but keep 
-%them the same for all functions in a single tuning run.  Compare the MSE/accuracy and
-%the configurations that are selected, analyze how they change (if they do)
-
+The applications train a model on a random subset (80\%) of the data. Each then uses this model to predict the field from which each fruit originates for the remaining 20\%. To study the impact of random data split, we consider multiple 80\%/20\% splits in our evaluation.
 \subsection{Empirical Methodology}
 
-To evaluate Seneca, we measure tuning performance, application execution time, 
-memory use, and monetary cost.  For tuning performance, 
-we use mean squared error (MSE)
-for regression tasks and percentage accuracy for classification 
-tasks (i.e. we score model prediction accuracy and not explanatory power).  
-Seneca is able to compare models for each type of application using 
-these scores because it uses the same
-total number of hyperparameters for each model.  Thus, the
-the penalty function in terms of 
-Bayesian Information Criteria is the same. 
+To evaluate Seneca, we measure model output quality, execution time, memory use, and monetary cost.  For output quality (prediction accuracy) our metrics are mean squared error (MSE) for regression and percentage accuracy for classification as described above. We score model prediction accuracy and not explanatory power ($R^2$) to avoid overfitting. 
 
-The default configuration that we consider for each application is described
-above.  We report results for the default, best (Seneca's recommendation), and
-worst performing hyperparameter configurations for each application type.  
-Seneca computes all possible combinations of
-the hyperparameter settings specified in the configuration to extract each of
-these results.  The default results represents those that a novice or first
-time user might employ when using these applications as a ``black box.''  The
-worst performing scenario shows how bad the results can be when parameters are
-poorly tuned.  Finally, the best is the upper bound on what is possible from
-tuning the hyperparameters for the values and dataset specified 
-(e.g. using expert knowledge or Seneca). 
+\ignore{Seneca is able to compare models for each type of application using these scores because it uses the same total number of hyperparameters for each model. Thus, the penalty function in terms of Bayesian Information Criteria is the same. 
+comments: BIC is based on parameters, not for hyperparameters.} 
 
-To evaluate the  savings introduced by Seneca, we deploy the applications
-on Amazon Web Services (AWS) Lambda and extract
-execution time and memory use from AWS CloudWatch~\cite{ref:awscloudwatch} logs.  
-Seneca extracts execution time and memory use from AWS CloudWatch logs\footnote{\url{https://aws.amazon.com/cloudwatch/}}.
-We compute monetary cost
-using the AWS Lambda pricing model\footnote{\url{https://aws.amazon.com/lambda/pricing/}}.
-%awslambdapricing: https://aws.amazon.com/lambda/pricing/
-Each function downloads the training and testing dataset 
+We compare results for the default, best (Seneca's recommendation), and worst performing hyperparameter configurations for each application type. Seneca computes all possible combinations of the hyperparameter settings specified in the configuration to extract each of these results.  \texttt{default} represents results that a novice or first time user might experience when using these applications as a ``black box.''  The \texttt{worst} shows how bad the results can be when parameters are poorly tuned.  Finally, the \texttt{best} is the upper bound on what is possible from tuning the hyperparameters for the values and datasets specified  (e.g. using expert knowledge or Seneca). 
+
+Seneca deploys the applications automatically over AWS Lambda
+and extracts execution time and memory use from 
+AWS CloudWatch~\cite{ref:awscloudwatch} logs.
+We compute monetary cost using the AWS Lambda pricing model~\cite{ref:pricing}.
+Each function downloads the training/testing dataset 
 of the application from AWS S3 upon function invocation. 
 We do not consider the cost of dataset storage 
 in our cost computations (it is very small).
-
-%We also experiment with different memory configurations for Seneca functions
-%in AWS Lambda.  
-We also investigate Seneca's automatic memory optimization capabilities.  To
-do so we compare the execution performance and cost of the benchmarks using
+%\footnote{\url{https://aws.amazon.com/cloudwatch/}}
+%\footnote{\url{https://aws.amazon.com/lambda/pricing/}}
+We also evaluate Seneca's automatic memory optimization capabilities.  To
+do so we compare the execution performance and cost of the applications using
 the maximum allocatable memory size to the performance and cost when run with
-Seneca's automatically determined memory size. Though memory size used reported by AWS CloudWatch fluctuates throughout the tuning process, we 
+Seneca's automatically determined memory size. Even though \texttt{maximum memory used} reported by AWS CloudWatch can fluctuate, we 
 have verified that the optimized allocated memory is sufficient for all 
-hyperparameter configurations to complete successfully.
-
-% Note that this comparison assumes that the memory size used by each benchmark does not depend on hyperparameter settings. We have verified that this assumption holds for the benchmarks and datasets we consider and plan to consider applications for which hyperparameter settings require different maximum amounts of memory as part of future work.  
+hyperparameter configurations to complete successfully.  We have also verified
+that the memory requirements across hyperparemeter settings do not vary 
+significantly. We plan to consider applications for which hyperparameter settings require
+different maximum memory sizes as part of future work.
 
 
 \subsection{Application Efficacy}
 
-We begin by evaluating Seneca's effect on application efficacy.
-That is, we detail the effect on the quality of the output generated by each
-application when Seneca determines the hyperparameter settings. 
-
 \begin{table}
 \centering
 \input{tables/mse-tab}
-\caption{Combination count and MSE for the default, best (Seneca's recommendation), and worst hyperparameter configurations for the three regression applications. 
+\caption{Hyperparameter configuration count and MSE for the default, 
+best (Seneca's recommendation), and worst configurations for the three regression applications. 
 For the MSE  values (rows 3-5), lower is better.
 \label{tab:mse}}
-%\vspace{-0.2in}
+\vspace{-0.2in}
 \end{table}
 
 \begin{figure}[t] \centering 
-\vspace{-0.2in}
-\includegraphics[scale=0.36]{box_plot_mse_2}
-\vspace{-0.4in}
-\caption{The box plot of MSE metric from three regression applications in the entire hyperparameter tuning search space. The red notch shows the MSE from the default settings. The colored diamonds are outliers beyond two interquartile ranges. Lower MSE values are better.
+\vspace{-0.5in}
+\includegraphics[scale=0.36]{box_plot_mse}
+\caption{Box plot of MSE from the three regression applications across the 
+hyperparameter tuning search space. The red notch shows the MSE from the default settings. 
+The colored diamonds are outliers beyond two interquartile ranges. 
+Seneca selects the points indicated by blue triangle.
+Lower MSE values are better. 
 \label{fig:box_plot_mse}}
 \vspace{-0.2in}
 \end{figure}
 
-%using the three regression applications: 
-%Prophet, Multi-Regression, and XGBoost (regression task). 
-Table~\ref{tab:mse} shows the effect of Seneca on the quality of the
-regressions generated by Prophet, Multi-regression, and XGBoost (when used as
-a regression algorithm). The first row indicates the number of
-different hyperparameter settings Seneca considered.  Rows 3 through 5 show
-the MSE generated by the default hyperparameter settings, the best (lowest
-MSE) Seneca was able to find, and the worst (largest MSE) that Seneca tested
-for each regression algorithm and dataset.
+We first evaluate the quality of the output generated by each
+ML applications when Seneca determines the hyperparameter settings. We
+first show the results for the regression applications in
+Table~\ref{tab:mse}.
+The first row of data is the number of hyperparameter 
+configurations that Seneca considers for each.
+The last three rows show the MSE for the default, worst, and best performing (Seneca's recommendation)
+hyperparameter configuation (lower is better).
+Seneca reduces MSE by 22.56\%, 15.94\%, and 44.88\%, for Prophet, Multi-Regression, and XGBoost,
+respectively, for the datasets and training methodologies that we consider.
+Verses the worst case, Seneca reduces MSE by 82.62\%, 78.01\%, and 99.28\%, respectively.
 
-%s mentioned previously, the table shows regression
-%quality in terms of MSE. 
-%
-%size of the hyperparameter search space (number of configurations
-%considered) and the mean squared error (MSE)
-%for each of the regression applications that we consider (columns 3-5).
-%The first row of data is 
-% the number of hyperparameter configurations in the search space of each. 
-%The last three rows show the MSE for the default, worst, and best performing 
-%hyperparameter configuation reported by Seneca (lower is better).  
+Figure~\ref{fig:box_plot_mse} shows the MSE box plot for the hyperparameter search space for these applications (lower is better). 
+The central rectangle covers the interquartile range (IQR),
+which is defined as the range of data
+points from first quartile to third quartile \texttt{$(Q3 - Q1)$}.
+The upper whisker extends to the last datum less
+than \texttt{$(Q3 + 2 * IQR)$} and the lower whisker extends to the first datum greater
+than \texttt{$(Q1 - 2 * IQR)$}. The data points beyond the whiskers are considered outliers
+and are plotted as colored diamonds. The red notch identifies the MSE that results from training
+the model using the default settings of hyperparameter.
+The blue triangle identifies the MSE of Seneca.
+The difference between red notch and blue triangle
+is the improvement brought about by the use of Seneca, over 
+using the default parameter setting.
+The plot also shows
+that Prophet and Multi-Regression have a significant number of outliers,
+indicating that a comprehensive search is critical to finding the best configurations.
 
-%Note that Seneca's recommendation is the best performing configuration.
-Compared to the default hyperparameter settings,
-Seneca reduces MSE by 22.56\%, 15.94\%, and 62.69\%, for Prophet, Multi-Regression, and XGBoost, respectively, for the datasets and training methodologies that we consider.
-Verses the worst case, Seneca reduces MSE by 82.62\%, 78.01\%, and 99.51\%, respectively.
-
-Figure~\ref{fig:box_plot_mse} provides a box plot of MSE (lower is better) for
-these applications for the entire hyperparameter search space. The central
-rectangle covers the interquartile range (IQR), which is defined as the range
-of data points from first quartile to third quartile (Q3 - Q1).  The upper
-whisker extends to the last datum less than \texttt{$(Q3 + 2 * IQR)$} and the
-lower whisker extends to the first datum greater than \texttt{$(Q1 - 2 *
-IQR)$}. The data points beyond the whiskers are considered outliers and are
-plotted as colored diamonds. 
-
-The red notch identifies the MSE that results
-from training the model using the default settings of hyperparameter. The
-difference between red notch of lowest data point is improvement brought about
-through the use of Seneca. From the location of red notch, we can see the MSE
-metrics from default configuration in three applications are similar to those
-in the first quartile for all applications.
-This data shows that the quality of the
-output generated by each application (for a given dataset) is dramatically
-affected by hyperparameter settings.  Predictably, the default settings are
-near the ``good'' end of the spectrum, but as both Table~\ref{tab:mse} and
-Figure~\ref{fig:box_plot_mse} indicate, Seneca is able to find
-parameterization that improves output quality over the default settings
-in each case.
-%Thus for Prophet
-%and Multi-Regression, Seneca 
-%, meaning the potential room for improvement is about 75\%
-%over the range of MSE metric. The box plot also illustrates that the best MSE
-%of Prophet and multivariate regression are among outliers, where a
-%comprehensive search is very critical to find the best configurations. 
-%\textcolor{blue}{Add more analysis here to discuss the variance in the MSE
-%for the range of configurations and how they change across applications.
-%Include any insights that the boxplots add.}
-
-%%%%%%%%%%%%%%%%%%%%% classification apps - tuning performance
-%%%%%%%%%%%%%%%%%%%%%%%%%%
-We next empirically evaluate the tuning performance of Seneca for the three
-classification applications: XGBoost (classification), SVC, and NN.
-Table~\ref{tab:accuracy} presents the accuracy percentage (higher is
-better) reported by each application (3 rightmost columns) for the default,
-worst, and best hyperparameter tuning configurations reported by Seneca.
-using an 80/20 (train/test) percent split,
-Seneca increases accuracy by 2.46\%, 19.04\%, and 3.79\%, for XGBoost
-(classification), SVC, and NN applications, respectively.  Compared to
-the worst case, Seneca improves accuracy by 98.11\%, 26.74\%, and 63.92\%,
-respectively.
-
-
+%%%%%%%%%%%%%%%%%%%%% classification apps - ML model output quality %%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{table}
 \centering
 \input{tables/accu-tab}
-\caption{The Accuracy reported for the 
+\caption{Accuracy for the 
 default, best (Seneca's recommendation), and worst hyperparameter configurations for 
 the three classification applications using 80\% of the data to train and 20\%
-of the data as a test set. 
-%under three train/test split scenarios.  
-For the accuracy values in the table, higher is better.
+of the data as a test set. Higher accuracy is better.
 \label{tab:accuracy}}
-\vspace{-0.2in}
-%\end{figure}
+\vspace{-0.1in}
 \end{table}
 
-
-%not sure what this paragraph is adding, seems to a repetition of what
-%is already said above...
-%The 80-20 case represents the typical usage of these classification
-%applications. Often, when evaluating the accuracy of a specific classifier,
-%the user uses the 80-20 split ``rule'' when measuring accuracy. In this case,
-%Seneca's improvement over the default parameterizations varies from 2.46\% for XGBoost application (column 2), to 19.04\% for SVC
-%(column 3).
-
 \begin{figure}[t] \centering 
+\vspace{-0.1in}
 \includegraphics[scale=0.36]{box_plot_Accuracy_20}
 \vspace{-0.4in}
-\caption{The box plot of accuracy metric from three classification applications for the entire hyperparameter tuning search space. The red notch indicates the accuracy metric from the trained model using default settings. The colorful diamonds are outliers beyond two interquartile ranges. Higher accuracy values are better.
+\caption{Box plot of accuracy reported for three classification applications across 
+the hyperparameter search space. The red notch indicates the accuracy that results
+from default hyperparameter values.
+The diamonds are outliers beyond two interquartile ranges. 
+Seneca selects the points indicated by blue triangle. 
+Higher accuracy is better. 
 \label{fig:box_plot_accuracy}}
-\vspace{-0.1in}
+\vspace{-0.2in}
 \end{figure}
-
-Figure~\ref{fig:box_plot_accuracy} presents the accuracy (higher is better) 
-for the entire hyperparameter search space as a box plot for each classification
-application.  The placement of the rectangle and whiskers is the same
-as in Figure~\ref{fig:box_plot_mse}. 
-%The central rectangle covers from first quartile to third quartile (Q3 - Q1) and the whiskers span from \texttt{$(Q3 + 2 * IQR)$} to \texttt{$(Q1 - 2 * IQR)$}. 
-The red notch indicates the accuracy metric from the model trained by default settings and colored diamonds are outliers beyond whiskers.
-Again, Seneca significantly
-improves tuning performance over the default and worst case configurations for SVC while generating a smaller improvement for XGBoost and Neural Network versus the default.
-This is because XGBoost and NN use a well tuned default parameter
-set that works well for most datasets.  SVC benefits more from Seneca tuning
-that the others.
 
 \begin{table}[t]
 \centering
 \scriptsize
 \input{tables/exec-time-memory-tab}
-\caption{The mean and standard deviation (in parentheses) values of execution time and memory use, and best accuracy across 30 executions of three classification benchmarks running against two random states. It verifies data split does not have major impact to execution metrics and scores.
+\caption{The mean and standard deviation (in parentheses) for execution time and memory use 
+(across 30 runs),
+and best accuracy score for the classification applications using two different random splits. 
 \label{tab:exec_memory}}
-%\vspace{-0.2in}
+\vspace{-0.1in}
 \end{table}
 
-To investigate the potential impact of the 80-20 data split for the classification
+
+We next empirically evaluate Seneca's model output quality for the three
+classification applications: XGBoost (classification), SVC, and NN.
+Table~\ref{tab:accuracy} presents the accuracy percentage (higher is better)
+for each application (3 right-most columns)
+for the default, worst, and best (Seneca's recommendation) hyperparameter tuning
+configurations (data rows 2-4).
+The first row 
+reports the number of configurations that Seneca considers in its search space.
+Using a random 80/20 (train/test) percent split,
+Seneca increases accuracy by 2.46\%, 19.04\%, and 3.79\%, for XGBoost
+(classification), SVC, and NN applications, respectively.  
+Because XGBoost and NN use a well-tuned default parameter set that works well for most datasets, Seneca provides only modest improvements.
+Compared to the worst case however, Seneca improves accuracy by 98.11\%, 26.74\%, and 64.17\%,
+respectively.  
+
+Figure~\ref{fig:box_plot_accuracy} presents the accuracy box plot across the hyperparameter search space for these applications (higher is better).  
+The central rectangle covers the first-third quartile
+\texttt{$(Q3 - Q1)$} and the whiskers span from \texttt{$(Q3 + 2 * IQR)$} to \texttt{$(Q1 - 2 * IQR)$}.
+The red notch indicates the accuracy metric from the model trained using the default
+settings and colored diamonds show outliers beyond the whiskers.
+The blue triangle at the top identifies the accuracy percentage reported by Seneca.
+
+The model output quality results across applications, show that prediction
+accuracy (for a given dataset) is dramatically
+affected by hyperparameter settings.  Predictably, the default settings are
+near the ``good'' end of the spectrum, however, Seneca is able to find the
+parameterization that improves output quality over the default settings
+in each case.
+
+To investigate the potential impact of Seneca's 80/20 percent data split for the classification
 applications, we next evaluate the quality of the output generated from 
-each when we consider different 80-20 random splits.
+each when we consider different 80/20 random splits.
 To enable this, we run Seneca 30 times to obtain execution time, memory use, 
-and best accuracy score. 
-Table~\ref{tab:exec_memory} shows the mean and standard deviation of these 
-metrics across runs for two different random splits.  The Seneca score
-is similar across splits.  As a result, users can employ the models
-(for the selected hyperparameter settings) that Seneca recommends
-repeatedly for inference to amortize the cost of using Seneca.
-
-% \begin{table}
-% \centering
-% \input{tables/speedup-tab}
-% \caption{The execution time of tuning in seconds by using Seneca and EC2 instance (Serial) and respective speedup. 
-% \label{tab:accuracy}}
-% \vspace{-0.2in}
-% \end{table}
-
-Finally, we compare Seneca to AWS EC2 use.
-We measure the execution time of Seneca and hyperparameter tuning 
-using the least expensive EC2 instance type in which the application
-will run (t2.micro for SVC and NN, t1.medium for the rest).  End to end, Seneca's
-concurrency facilitates in a 4x -- 17x (9x on average) speedup
-and \$0.01--\$0.34 (\$0.13) additional cost over serialized execution in EC2.
-EC2 trades off monetary cost for programmer productivity, i.e. the developer 
-must setup, deploy, and manage the applications manually. Moreover, the EC2
-pricing model is imposed on hour boundaries. Moreover, Seneca and 
-AWS Lambda impose no cost when no execution is occuring (EC2 instances must
-stay idle in between runs). As part of future work, we will compare Seneca
-to the AWS Elastic Container Service.
-%\textcolor{blue}{FIX THIS: State the results (speed up) per application and 
-%also state the cost analysis for 1 hour of computation.  Clarify that this
-%is due to the 1-hour pricing model of EC2.}
-
-%We use instance type t2.medium
-%for Prophet (since it cannot be built
-%process on EC2 instance across five applications. Since library compilation issue, we use t2.medium on Prophet and t2.micro on other 4 applications. 
-%As a result, Seneca achieves at least 4x speedup for IO-bound application (SVC) and 21x speedup for CPU-bound application (XGBoost). It confirms Seneca can execute tuning within a more reasonable period of time, comparing to executing serially on EC2 instance.
+and best accuracy score. We report the
+mean and standard deviation (in parentheses) 
+for execution time and memory use across runs,
+and the best accuracy score in
+Table~\ref{tab:exec_memory}. Each pair of rows shows the results for two different random splits.
+Our earlier results use input 1; this table adds results for a second, 80/20 
+random split of the input (we also considered other random splits, which we omit for brevity, 
+and the results are similar).  The performance and Seneca score is similar across splits. 
+This result indicates that for these applications, 
+users can repeatedly employ the recommended models for inference on other datasets or splits,
+to amortize the cost of using Seneca.
 
 \subsection{Cost Analysis}
 
@@ -446,50 +314,49 @@ that Seneca intelligently probe to determine the best memory size
 to use.  We report the cost of these probes as \texttt{Optimizer Cost}.
 
 Table~\ref{tab:cost_optimized} shows the results with and without
-the Seneca memory optimization. 
-The five columns identify the benchmark applications.
-Because the performance profile of XGBoost is the same for regression
-or classification, we include its metrics once.
+the Seneca memory optimization for each of the five applications.
 The first two rows show the results when we use the maximum allocated memory 
 for the Lambda functions. We present execution time in minutes (row 1) and 
-monetary cost (row 2).
-
-Rows 3--6 show the performance and cost impact of using Seneca's memory optimization.
-is the execution time in minutes 
+monetary cost in cents (row 2). 
+Rows 3--6 show the performance and cost when using Seneca's memory optimization.
 \texttt{Exec time opt} is the execution time in minutes.
-\texttt{Optimizer Cost} is monetary cost of Seneca's memory size detector.
-\texttt{Cost opt} is monetary cost of using Seneca and the memory size
-it identifies and recommends.
-\texttt{Total cost} is the sum of \texttt{Optimizer Cost} and \texttt{Cost opt}, i.e., the total cost of using Seneca to perform hyperparameter tuning for these applications and data sets.
-The last two rows show the monetary savings (row 7) and percent savings (row 8) u
+\texttt{Optimizer Cost} is monetary cost in cents of Seneca's memory size detector.
+\texttt{Cost opt} is monetary cost in cents of using Seneca's memory optimizer.
+\texttt{Total cost} is the overall cost of using Seneca to perform hyperparameter 
+tuning for these applications and datasets (sum of Optimizer Cost and Cost opt).
+The last two rows show the monetary savings in cents (row 7) and percent savings (row 8)
 of using Seneca's memory optimization.  Seneca's memory optimization reduces
-the monetary cost of its use from 10--30\% (20\% on average).
+the monetary cost of its use from 10--35\% (25\% on average).
 
 
 \begin{table}
 \centering
 \input{tables/seneca-mem-opt-tab.tex}
-\caption{Seneca Memory Optimization: Rows 1--2 show the execution time and  monetary cost of using Seneca without its memory optimization. Rows 3-6 is the execution time and cost, respectively, when Seneca detects and sets allocated memory for the application functions automatically.  Rows 7-8 show the savings by dollar and percentage.
+\caption{Seneca Memory Optimization: Rows 1--2 show the execution time and  monetary cost 
+of using Seneca without its memory optimization (allocated memory = 3G). 
+Rows 3-6 is the execution time and cost, 
+respectively, when using the Seneca memory optimizer. 
+Rows 7-8 show the savings in cents and percentage, respectively.
 \label{tab:cost_optimized}}
-\vspace{-0.2in}
+%\vspace{-0.1in}
 \end{table}
 
 Table~\ref{tab:cost_optimized} illustrates two important points.
-First, using AWS Lambda, full hyperparameter space exploration is not expensive in 
+First, using AWS Lambda, full hyperparameter space exploration is inexpensive in
 \textit{absolute} dollar cost terms and Seneca's automatic memory size optimization
-decreases this cost further.  Second, this optimization reduces cost but can 
+decreases this cost further.  Second, memory optimization reduces cost but can 
 increase the total execution time for parameter search 
 since the functions must operate under additional memory 
 constraints (versus using the maximum allocated memory).  
 In addition, this cost fluctuates depending on the quality of the Lambda
 execution environment (number of CPUs, Linux container overhead, 
-multitenency, etc.).  We omit the data due to space constraints.
-However, the average absolute difference in cost
-across the five applications (30 runs) is \$0.050. %I use only split 1 for all 5
+multitenency, etc.).  We omit this data due to space constraints but analyze it here.
+The average absolute difference in cost
+across the five applications (30 runs) is \$0.05. %I use only split 1 for all 5
 %numbers are below
-Moreover, the highest cost of execution under 
-optimized memory is still cheaper than the lowest cost of execution 
-under maximum memory for all five benchmarks.  
+Moreover, we have verified that the highest cost of execution under 
+optimized memory is still cheaper than the lowest cost of execution under maximum 
+memory for all five applications.
 %$	Ave Cost	Highest Cost	Lowest Cost	Diff (High - low)
 %Prophet	0.215	0.294	0.178	0.116
 %Multi_Reg	0.076	0.078	0.075	0.003
@@ -500,100 +367,59 @@ under maximum memory for all five benchmarks.
 %NN_1	0.055	0.059	0.051	0.007
 %NN_2	0.058	0.061	0.056	0.005
 
+\begin{table}
+\centering
+\input{tables/yield-tab-corrected.tex}
+\caption{Seneca VS EC2 cost analysis. Execution time (mins) and cost (cents) for
+executing the applications serially in EC2 (t2.medium).  
+Rows 3--4 show yield -- the additional speedup that
+Seneca can achieve for each additional dollar spent for these applications.
+Yield for SVC is 0 (infinite) because Seneca costs less than EC2 in this case.
+Ideal yield shows the yield when we execute the applications in parallel (assuming
+2x perfect parallelism).
+\label{tab:yield}}
+\vspace{-0.1in}
+\end{table}
 
-Overall, given the AWS Lambda cost model and its performance variability, 
+Finally, we compare the cost of Seneca to AWS Elastic Compute Cloud (EC2) use. 
+We measure the execution time of Seneca using the
+least expensive EC2 instance type in which the applications will run
+(t2.medium, which has 2 multi-tenant cores and 4GB of memory). 
+Note that EC2 instances are charged for by the hour; Lambda charges 
+are only imposed when functions execute. We execute the applications serially
+using the instance.  For this setting, Seneca enables a speedup over EC2 
+of 3.72x -- 12.38x (6.51x on average). Doing so, however, imposes an additional 
+cost of \$0.01--\$0.15 over EC2 for all but SVC. 
+Seneca costs \$0.03 less than EC2 for SVC (because SVC runs in significantly less than
+the next hour boundary).
+
+To further understand the relationship between Seneca speedup and cost when Seneca
+is more expensive (but faster) than using EC2, we define \texttt{yield} as 
+$Y=\frac{T_{ec}}{T_{sc}}/({C_{sc} - C_{ec}}) \,|\ if \,C_{sc} > C_{ec}$ where $T_{ec}$ and $T_{sc}$ are the execution time, $C_{ec}$ and $C_{sc}$ are the total cost of EC2 instance 
+and Seneca, respectively.
+For applications for which Seneca is cheaper (e.g. SVC), we report \texttt{yield} 
+as $0.00$.  This metric reveals the amount of speed up that Senence can achieve 
+for each additional dollar spent.  To understand the yield if we were to 
+parallelize the EC2 deployment (perhaps a more ``fair'' comparison), 
+we also estimate yield for perfect parallelism (2x in our case for 
+the t2.medium).  
+
+We present results for this yield metric in Table~\ref{tab:yield} for each of the applications.
+Rows 1 and 2 show the average execution time (in minutes) and cost (in cents) 
+from using EC2 for each.
+Rows 3 and 4 show the Seneca yield (speedup/\$).
+Row 3 shows yield for serialized execution in EC2 (t2.medium
+instance) and row 4 shows estimated yield if we were to achieve perfect parallelism
+(i.e. 2x) using the EC2 instance. On average across the four applications for which
+EC2 is cheaper, Seneca achieves yield of 294 (assuming perfect parallelism in EC2). 
+That is, Seneca is able to provide a speedup
+of 294x on average, for each additional dollar spent for these applications.
+We plan to compare Seneca cost and performance 
+to other EC2 instances and the AWS Elastic Container Service
+as part of future work.
+
+Overall, given the AWS Lambda pricing model and its Lambda performance variability, 
 Seneca is still able to find the sweet spot between cost 
-and execution time. Thus Seneca can be used to trade off time-to-solution for
-cost as desired by users.
-
-
-%Even using the maximum memory available
-%for almost 25 minutes of execution 
-%time (cf Prophet in Table~\ref{tab:cost_optimized}), the
-%total dollar cost is approximately 73 cents.  Secondly, Seneca's memory
-%optimizations produce a significant savings to further reduce its cost.
-%
-%Note that Seneca's memory/cost optimization
-%can introduce an execution time penalty (relative to the maximum memory
-%execution) for some of the applications.  
-%That is, the
-%execution times for all applications increase when Seneca chooses
-%a memory size.  Thus while Seneca is finding the best application output
-%quality and optimizing the cost of producing that output, it is doing so at
-%the expense of execution performance (time to solution). Such a penalty
-%is expected due to the proportional CPU power to allocated
-%memory. However, the Seneca optimizer is able to find the optimal
-%memory configuration to minimize that  penalty. In the case of SVC, Seneca saves 30\% compared to max memory execution (\$0.016 vs \$0.023) but has almost the same execution time (1.91 vs 1.95 minutes).
-% The source of this execution performance penalty is not clear.  We hypothesize
-% that when requesting a large memory for AWS Lambda, Amazon chooses a machine
-% that also has fast processors so the Lambda functions execute more quickly.
-% If this supposition is true, then the AWS Lambda pricing model correctly
-% weights the cost of additional memory (in light of the reduced execution time)
-% because the large-memory executions are still more expensive.
-%However regardless of the cause, 
-%Even in the worst case of CPU-bound application, the Seneca memory optimizer still provides a way to trade off time to solution for cost when the highest possible application output quality is desired.
-
-%To corroborate the cost-effectiveness of Seneca, we analyzed the total cost of five benchmarks in 30 executions from last section. We observe the reported \textit{billed duration} and \textit{max memory used} oscillate that leads to different total cost across 30 executions and we assume it is because the pagination and memory sampling method used by different AWS Lambda host servers. However, even taking fluctuation into account, the 
-%highest cost of execution under optimized memory is still cheaper than the lowest cost of execution under maximum memory in all five benchmarks. We believe Seneca's optimizer is economical despite the locality of lambda container and application.
-
-
-% \textcolor{blue}{AWS announces the proportional CPU power to memory which is the source of penalty}
-% \textcolor{blue}{See my notes to fix the tables in the caption of these figures.}
-
-
-
-% \textcolor{blue}{It would be good here in the Seneca case to also run the applications in the minimum amount of memory discovered by Seneca (i.e., if we were to run Seneca ahead of time, taking the max memory used by any of the functions per application) -- to show what Seneca is missing.  this assumes you are doing the memory optimization WHILE you are doing the tuning -- if you are not, you can leave this out, but we need to remind the reader at this point how the memory optimization is done by Seneca (we should do this in this paragraph, either way).}
-
-% \textcolor{blue}{Comments: The minimum amount of memory is the "max memory used" value. I tried that out and the execution time increases dramatically at the minimum memory case. I will explore the idea of simultaneous optimization and tuning later}
-
-
-
-
-%\begin{figure}[t] \centering 
-%\includegraphics[scale=0.36]{Cost_analysis_2}
-%\caption{The cost analysis of Seneca automatics memory optimization. 
-%By reducing the memory use of each, Seneca reduces the monetary cost of hyperparameter tuning by 
-%an average of 20\% over using the maximum memory allocatable.\label{fig:cost_analysis}}
-%\vspace{-0.2in}
-%\end{figure}
-
-%\begin{figure}[t] \centering 
-%\includegraphics[scale=0.36]{Latency_analysis_2}
-%\caption{Latency of Seneca with (Opt) and without (No Opt) memory optimization, for each application. As Seneca reduces memory use (and cost), it also extends the execution time of the functions (and thus total tuning time, i.e., the latency of Seneca) by Y\% on average across applications \textcolor{blue}{compute and fill in Y here.}
-%\textcolor{blue}{Change the legend as follows: change "Optimized Memory" to "Opt"; change "Maximum Memory" to "No Opt"; Make sure that Opt stays green and change No Opt to be red (same as above graph)} 
-%\label{fig:latency_analysis}}
-%\vspace{-0.2in}
-%\end{figure}
-
-%Figure~\ref{fig:cost_analysis} presents the breakdown in the monetary cost of
-%using Seneca (performing hyperparameter tuning) with and without its automatic
-%memory optimization.  We plot bar graphs for each application across the
-%x-axis; the y-axis is monetary cost in US dollars. The stacked column is the
-%total cost of tuning by Seneca Memory Optimization, and the green and red
-%segments represent the cost of tuning and function optimization respectively.
-%The red column at the right-hand side of each application is the total cost of
-%tuning by using lambda function at maximum memory. For computation intensive
-%applications like Prophet, they generate higher costs, which depend on the
-%duration and memory usage on AWS Lambda. %The difference between two costs 
-
-
-%\textcolor{red}{Add analysis here on what the columns are showing -- discuss
-%any anomalies (i.e., why is prophet optimization cost more than the others; why
-%mult-regression difference is greater than the others). provide a summary for
-%that states the average difference between each pair of bars across
-%applications.}
-
-%By reducing the amount of memory used, Seneca reduces its cost.  However by
-%doing so, Seneca also increases the total time it requires to perform
-%hyperparameter tuning (latency) as shown in Figure~\ref{fig:latency_analysis}
-%(due to the memory constraints place on execution).  The x-axis shows two bars
-%per application, one with memory optimization (Opt) and one without (No Opt).
-%The y-axis is Seneca's total latency, on average, to perform hyperparameter
-%tuning.  On average, the Seneca memory optimization increases latency by X\%
-%on average across applications.  \textcolor{red}{Compute and fill in X here.}
-%\textcolor{blue}{Add analysis here to discuss why the performance difference
-%is different for different applications (some more sensitive to memory
-%restrictions and why), and anything else you can pull out that is interesting
-%in these numbers.}
-
+and execution time. Thus Seneca can be used to trade off time-to-solution 
+for cost as desired by users, to automatically evaluate the impact of hyperparameter settings for ML models.
 
