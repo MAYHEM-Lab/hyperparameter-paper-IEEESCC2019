@@ -59,8 +59,8 @@ It then orchestrates exhaustive evaluation of specified hyperparameter settings
 to identify the best performing model (for a given dataset) by
 comparing error and accuracy across models.  We consider
 prediction accuracy (as opposed to explanatory power) as the
-scoring metric (mean squared error for regression 
-and accuracy percentage for classification), to avoid overfitting.
+scoring metric (mean squared prediction error for regression 
+and accuracy percentage for classification).
 Users present Seneca with their application, a range of values for 
 each hyperparameter (or the default can be used), and a representative dataset.
 Seneca produces, tests, and evaluates models for all combinations 
@@ -77,8 +77,9 @@ construction and comparison. Seneca is also able to identify
 automatically the
 best memory configuration for each application, further lowering its
 cost
-by 10-35\%. Relative to execution in AWS EC2, Seneca enables average speedups of 294x for each additional dollar 
-spent for the applications and datasets we consider.
+by 10-35\%. Relative to execution in AWS EC2, we observe a benefit/cost
+ratio (computed as speedup/(dollar cost) cost of 294 on the average
+in the experiments we consider.
 We intend to make Seneca, its applications, and their datasets publicly available
 when/if this paper is accepted for publication.  
 We next overview our design and implementation of Seneca and then
